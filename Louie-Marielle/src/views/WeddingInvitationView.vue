@@ -1,11 +1,42 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import heroImage from '../assets/images/hero.jpg'
+import celebration1 from '../assets/images/1.jpg'
+import celebration2 from '../assets/images/2.jpg'
+import celebration3 from '../assets/images/3.jpg'
+import celebration4 from '../assets/images/4.jpg'
+import celebration5 from '../assets/images/5.jpg'
+import celebration6 from '../assets/images/6.jpg'
+import celebration7 from '../assets/images/7.jpg'
+import celebration8 from '../assets/images/8.jpg'
+import celebration9 from '../assets/images/9.jpg'
+import formalAttireGuys from '../assets/images/semiformal-attire-guys.png'
+import formalAttireGirls from '../assets/images/semiformal-attire-girls.png'
+
+const store = useStore()
 
 const navOpen = ref(false)
 const scrolled = ref(false)
+const isCompactCelebration = ref(false)
 
 const rsvpSubmitted = ref(false)
-const rsvpSubmitting = ref(false)
+const rsvpSubmitting = computed(() => store.state.rsvpSubmitting)
+const rsvpError = computed(() => store.state.rsvpError)
+const emailValidationPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const isEmailFormatValid = computed(() => {
+  const email = rsvp.value.email.trim()
+  return emailValidationPattern.test(email)
+})
+const emailValidationError = computed(() => {
+  const email = rsvp.value.email.trim()
+  if (!email) return ''
+  return isEmailFormatValid.value ? '' : 'Please enter a valid email address.'
+})
+const isRsvpFormValid = computed(() => {
+  const { fullName, email, attendance } = rsvp.value
+  return Boolean(fullName.trim() && email.trim() && attendance && isEmailFormatValid.value)
+})
 
 const rsvp = ref({
   fullName: '',
@@ -15,7 +46,6 @@ const rsvp = ref({
 })
 
 const attirePalette = [
-  { label: 'Cream & linen', color: '#ede4d7' },
   { label: 'Blushing Peach', color: '#efa59a' },
   { label: 'Terracotta', color: '#c0674f' },
   { label: 'Sage', color: '#8fa38f' },
@@ -45,30 +75,58 @@ const programItems = [
   { time: '7:00 PM', title: 'Send-off', detail: 'Thank you for sharing this day with us.' },
 ]
 
-function resetRsvpForm() {
-  rsvp.value = {
-    fullName: '',
-    email: '',
-    attendance: '',
-    message: '',
-  }
-  rsvpSubmitted.value = false
+const celebrationImages = [
+  celebration1,
+  celebration2,
+  celebration3,
+  celebration4,
+  celebration5,
+  celebration6,
+  celebration7,
+  celebration8,
+  celebration9,
+]
+
+const celebrationStartIndex = ref(0)
+const celebrationVisibleCount = computed(() => (isCompactCelebration.value ? 2 : 3))
+
+const visibleCelebrationImages = computed(() => {
+  return Array.from({ length: celebrationVisibleCount.value }, (_, offset) => {
+    const index = (celebrationStartIndex.value + offset) % celebrationImages.length
+    return {
+      src: celebrationImages[index],
+      alt: `Celebration photo ${index + 1}`,
+      key: `${index}-${celebrationStartIndex.value}`,
+    }
+  })
+})
+
+function showPreviousCelebrationPhotos() {
+  celebrationStartIndex.value =
+    (celebrationStartIndex.value - 1 + celebrationImages.length) % celebrationImages.length
 }
 
-function submitRsvp() {
-  if (rsvpSubmitting.value) return
-  const { fullName, email, attendance } = rsvp.value
-  if (!fullName.trim() || !email.trim() || !attendance) return
+function showNextCelebrationPhotos() {
+  celebrationStartIndex.value = (celebrationStartIndex.value + 1) % celebrationImages.length
+}
 
-  rsvpSubmitting.value = true
-  window.setTimeout(() => {
-    rsvpSubmitting.value = false
+async function submitRsvp() {
+  if (rsvpSubmitting.value || !isRsvpFormValid.value) return
+
+  try {
+    await store.dispatch('submitRsvp', rsvp.value)
     rsvpSubmitted.value = true
-  }, 450)
+  } catch {
+    /* error message is in store */
+  }
 }
 
 function onScroll() {
   scrolled.value = window.scrollY > 40
+}
+
+function syncCelebrationLayout() {
+  isCompactCelebration.value = window.matchMedia('(max-width: 767px)').matches
 }
 
 function closeNav() {
@@ -79,7 +137,9 @@ let revealObserver = null
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', syncCelebrationLayout, { passive: true })
   onScroll()
+  syncCelebrationLayout()
 
   revealObserver = new IntersectionObserver(
     (entries, observer) => {
@@ -99,6 +159,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', syncCelebrationLayout)
   revealObserver?.disconnect()
   revealObserver = null
 })
@@ -139,9 +200,11 @@ const venue = {
 
     <main>
       <section id="hero" class="hero reveal-on-scroll">
-        <div class="hero__image-slot image-slot image-slot--hero" aria-hidden="true">
-          <span class="image-slot__label">Your photo</span>
-        </div>
+        <div
+          class="hero__image"
+          :style="{ backgroundImage: `url(${heroImage})` }"
+          aria-hidden="true"
+        />
         <div class="hero__overlay">
           <p class="hero__eyebrow">Together with their families</p>
           <h1 class="hero__names">Louie <span class="hero__ampersand">&</span> Marielle</h1>
@@ -171,16 +234,32 @@ const venue = {
               </p>
             </article>
           </div>
-          <div class="inline-gallery">
-            <div class="image-slot image-slot--square" aria-hidden="true">
-              <span class="image-slot__label">Your photo</span>
+          <div class="celebration-carousel">
+            <button
+              type="button"
+              class="carousel-control"
+              aria-label="Show previous celebration photos"
+              @click="showPreviousCelebrationPhotos"
+            >
+              &lt;
+            </button>
+            <div class="inline-gallery">
+              <div
+                v-for="photo in visibleCelebrationImages"
+                :key="photo.key"
+                class="celebration-photo-card"
+              >
+                <img :src="photo.src" :alt="photo.alt" class="celebration-photo" />
+              </div>
             </div>
-            <div class="image-slot image-slot--square" aria-hidden="true">
-              <span class="image-slot__label">Your photo</span>
-            </div>
-            <div class="image-slot image-slot--square" aria-hidden="true">
-              <span class="image-slot__label">Your photo</span>
-            </div>
+            <button
+              type="button"
+              class="carousel-control"
+              aria-label="Show next celebration photos"
+              @click="showNextCelebrationPhotos"
+            >
+              &gt;
+            </button>
           </div>
         </div>
       </section>
@@ -255,6 +334,24 @@ const venue = {
             brown, and touches of dusty rose. Natural fabrics and relaxed silhouettes fit the mood
             beautifully.
           </p>
+          <div class="attire-samples">
+            <figure class="attire-sample">
+              <figcaption class="attire-sample__label">Sample outfit for men:</figcaption>
+              <img
+                :src="formalAttireGuys"
+                alt="Sample semi-formal outfit inspiration for men"
+                class="attire-sample__image"
+              />
+            </figure>
+            <figure class="attire-sample">
+              <figcaption class="attire-sample__label">Sample outfit for women:</figcaption>
+              <img
+                :src="formalAttireGirls"
+                alt="Sample semi-formal outfit inspiration for women"
+                class="attire-sample__image"
+              />
+            </figure>
+          </div>
           <p class="attire-palette-heading">Semi-formal color guide</p>
           <p class="attire-palette-hint">
             Mix and match within these tones—no need to match exactly.
@@ -288,14 +385,13 @@ const venue = {
             <p class="rsvp-success__text">
               Your response has been noted. We’re so grateful you took a moment to reply.
             </p>
-            <button type="button" class="rsvp-reset" @click="resetRsvpForm">
-              Send another response
-            </button>
           </div>
 
           <form v-else class="rsvp-form" @submit.prevent="submitRsvp">
             <div class="form-field">
-              <label class="form-label" for="rsvp-name">Full name</label>
+              <label class="form-label" for="rsvp-name"
+                >Full name <span class="required-asterisk" aria-hidden="true">*</span></label
+              >
               <input
                 id="rsvp-name"
                 v-model="rsvp.fullName"
@@ -307,7 +403,9 @@ const venue = {
               />
             </div>
             <div class="form-field">
-              <label class="form-label" for="rsvp-email">Email</label>
+              <label class="form-label" for="rsvp-email"
+                >Email <span class="required-asterisk" aria-hidden="true">*</span></label
+              >
               <input
                 id="rsvp-email"
                 v-model="rsvp.email"
@@ -317,9 +415,14 @@ const venue = {
                 autocomplete="email"
                 required
               />
+              <p v-if="emailValidationError" class="form-error" role="alert">
+                {{ emailValidationError }}
+              </p>
             </div>
             <fieldset class="form-field form-field--fieldset">
-              <legend class="form-label">Will you attend?</legend>
+              <legend class="form-label">
+                Will you attend? <span class="required-asterisk" aria-hidden="true">*</span>
+              </legend>
               <div class="form-radios">
                 <label class="form-radio">
                   <input
@@ -349,11 +452,13 @@ const venue = {
                 rows="3"
               />
             </div>
-            <p class="form-note">
-              This form is for the website preview. Connect it to your email or backend when you’re
-              ready to collect real responses.
-            </p>
-            <button type="submit" class="form-submit" :disabled="rsvpSubmitting">
+            <p v-if="rsvpError" class="form-error" role="alert">{{ rsvpError }}</p>
+            <p class="form-note">Your RSVP is saved for Louie &amp; Marielle’s guest list.</p>
+            <button
+              type="submit"
+              class="form-submit"
+              :disabled="rsvpSubmitting || !isRsvpFormValid"
+            >
               {{ rsvpSubmitting ? 'Sending…' : 'Send RSVP' }}
             </button>
           </form>
@@ -396,12 +501,12 @@ const venue = {
 .invite {
   --cream: #f3ece3;
   --parchment: #e8dfd2;
-  --terracotta: #b86b52;
-  --terracotta-dark: #8f4f3c;
-  --sage: #8a9b7e;
-  --sage-dark: #5f6e54;
-  --bark: #4a3f36;
-  --ink: #2c2620;
+  --terracotta: #c78871;
+  --terracotta-dark: #a76a56;
+  --sage: #9cae90;
+  --sage-dark: #76886b;
+  --bark: #63564b;
+  --ink: #453b33;
   --wheat: #c4a574;
 
   min-height: 100vh;
@@ -421,13 +526,15 @@ const venue = {
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1rem;
+  background: rgba(243, 236, 227, 0.42);
+  backdrop-filter: blur(6px);
   transition:
     background 0.25s ease,
     box-shadow 0.25s ease;
 }
 
 .top-nav--scrolled {
-  background: rgba(243, 236, 227, 0.94);
+  background: rgba(243, 236, 227, 0.72);
   box-shadow: 0 1px 0 rgba(74, 63, 54, 0.08);
   backdrop-filter: blur(8px);
 }
@@ -528,16 +635,19 @@ const venue = {
   position: relative;
   min-height: 92vh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   padding: 5rem 1.25rem 3rem;
 }
 
-.hero__image-slot {
+.hero__image {
   position: absolute;
   inset: 0;
   z-index: 0;
   border-radius: 0;
+  background-position: calc(50% + 6%) 76%;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .hero__overlay {
@@ -546,10 +656,10 @@ const venue = {
   text-align: center;
   max-width: 36rem;
   padding: 2rem 1.5rem 2.25rem;
-  background: rgba(243, 236, 227, 0.88);
-  border: 1px solid rgba(196, 165, 116, 0.35);
+  background: transparent;
+  border: none;
   border-radius: 2px;
-  box-shadow: 0 24px 48px rgba(44, 38, 32, 0.12);
+  box-shadow: none;
 }
 
 .hero__eyebrow {
@@ -558,7 +668,8 @@ const venue = {
   font-size: 1.05rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--sage-dark);
+  color: #f6eee4;
+  text-shadow: 0 1px 4px rgba(44, 38, 32, 0.32);
 }
 
 .hero__names {
@@ -567,7 +678,8 @@ const venue = {
   font-weight: 400;
   font-size: clamp(2.75rem, 10vw, 4.25rem);
   line-height: 1.15;
-  color: var(--bark);
+  color: #fff8ef;
+  text-shadow: 0 2px 10px rgba(44, 38, 32, 0.4);
 }
 
 .hero__ampersand {
@@ -582,8 +694,9 @@ const venue = {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.2rem;
   font-style: italic;
-  color: var(--ink);
-  opacity: 0.9;
+  color: #5a4a3f;
+  opacity: 0.96;
+  text-shadow: 0 1px 3px rgba(243, 236, 227, 0.42);
 }
 
 .hero__cta {
@@ -596,8 +709,8 @@ const venue = {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--cream);
-  background: var(--terracotta-dark);
+  color: #fff9f2;
+  background: rgba(167, 106, 86, 0.9);
   border-radius: 2px;
   transition:
     background 0.2s,
@@ -607,40 +720,6 @@ const venue = {
 .hero__cta:hover {
   background: var(--bark);
   color: var(--cream);
-}
-
-.image-slot {
-  position: relative;
-  background:
-    repeating-linear-gradient(
-      -12deg,
-      rgba(232, 223, 210, 0.5) 0,
-      rgba(232, 223, 210, 0.5) 1px,
-      transparent 1px,
-      transparent 12px
-    ),
-    linear-gradient(145deg, rgba(196, 165, 116, 0.15), rgba(138, 155, 126, 0.12));
-  border: 2px dashed rgba(184, 107, 82, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image-slot--hero {
-  min-height: 100%;
-}
-
-.image-slot--square {
-  aspect-ratio: 1;
-  border-radius: 2px;
-}
-
-.image-slot__label {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem;
-  font-style: italic;
-  color: rgba(74, 63, 54, 0.45);
-  pointer-events: none;
 }
 
 .section {
@@ -751,19 +830,77 @@ const venue = {
   color: rgba(44, 38, 32, 0.85);
 }
 
+.celebration-carousel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 2.5rem;
+}
+
 .inline-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
-  margin-top: 2.5rem;
+}
+
+.celebration-photo-card {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 165, 116, 0.45);
+  box-shadow: 0 10px 24px rgba(44, 38, 32, 0.1);
+}
+
+.celebration-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-control {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(184, 107, 82, 0.5);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--terracotta-dark);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.carousel-control:hover {
+  background: var(--terracotta-dark);
+  color: var(--cream);
+  border-color: var(--terracotta-dark);
 }
 
 @media (max-width: 640px) {
   .inline-gallery {
-    grid-template-columns: 1fr;
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
+    width: min(100%, 360px);
+  }
+}
+
+@media (max-width: 767px) {
+  .celebration-carousel {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .inline-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .carousel-control {
+    align-self: center;
+    justify-self: center;
   }
 }
 
@@ -821,6 +958,39 @@ const venue = {
   text-align: center;
   margin: 1rem 0 0;
   color: rgba(44, 38, 32, 0.92);
+}
+
+.attire-samples {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.attire-sample {
+  margin: 0;
+}
+
+.attire-sample__label {
+  margin: 0 0 0.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+.attire-sample__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  border: 1px solid rgba(196, 165, 116, 0.35);
+  box-shadow: 0 10px 30px rgba(44, 38, 32, 0.1);
 }
 
 .attire-palette-heading {
@@ -1052,6 +1222,10 @@ const venue = {
   color: var(--sage-dark);
 }
 
+.required-asterisk {
+  color: #b3261e;
+}
+
 .form-input,
 .form-textarea {
   width: 100%;
@@ -1110,6 +1284,13 @@ const venue = {
   color: rgba(44, 38, 32, 0.65);
 }
 
+.form-error {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #8b3a3a;
+}
+
 .form-submit {
   width: 100%;
   padding: 0.75rem 1.25rem;
@@ -1159,26 +1340,6 @@ const venue = {
   font-size: 1.02rem;
   line-height: 1.65;
   color: rgba(44, 38, 32, 0.88);
-}
-
-.rsvp-reset {
-  padding: 0.5rem 1rem;
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--terracotta-dark);
-  background: transparent;
-  border: 1px solid rgba(184, 107, 82, 0.5);
-  border-radius: 2px;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-
-.rsvp-reset:hover {
-  background: rgba(184, 107, 82, 0.08);
 }
 
 .footer {
