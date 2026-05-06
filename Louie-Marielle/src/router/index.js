@@ -6,7 +6,16 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      redirect: '/guest',
+    },
+    {
+      path: '/guest',
+      name: 'guest',
+      component: WeddingInvitationView,
+    },
+    {
+      path: '/wedding-party',
+      name: 'wedding-party',
       component: WeddingInvitationView,
     },
   ],

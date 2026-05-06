@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import heroImage from '../assets/images/hero.jpg'
 import celebration1 from '../assets/images/1.jpg'
@@ -11,10 +12,13 @@ import celebration6 from '../assets/images/6.jpg'
 import celebration7 from '../assets/images/7.jpg'
 import celebration8 from '../assets/images/8.jpg'
 import celebration9 from '../assets/images/9.jpg'
-import formalAttireGuys from '../assets/images/semiformal-attire-guys.png'
-import formalAttireGirls from '../assets/images/semiformal-attire-girls.png'
+import semiFormalAttireGuys from '../assets/images/semiformal-attire-guys.png'
+import semiFormalAttireGirls from '../assets/images/semiformal-attire-girls.png'
+import formalAttireGuys from '../assets/images/formal-attire-guys.png'
+import formalAttireGirls from '../assets/images/formal-attire-girls.png'
 
 const store = useStore()
+const route = useRoute()
 
 const navOpen = ref(false)
 const scrolled = ref(false)
@@ -54,6 +58,46 @@ const attirePalette = [
   { label: 'Dusty rose', color: '#c9a09a' },
 ]
 
+const isWeddingPartyRoute = computed(() => route.path === '/wedding-party')
+const dressCodeLabel = computed(() => (isWeddingPartyRoute.value ? 'Formal' : 'Semi-formal'))
+const menAttireImage = computed(() =>
+  isWeddingPartyRoute.value ? formalAttireGuys : semiFormalAttireGuys,
+)
+const womenAttireImage = computed(() =>
+  isWeddingPartyRoute.value ? formalAttireGirls : semiFormalAttireGirls,
+)
+const menAttireAlt = computed(() =>
+  isWeddingPartyRoute.value
+    ? 'Sample formal outfit inspiration for men'
+    : 'Sample semi-formal outfit inspiration for men',
+)
+const womenAttireAlt = computed(() =>
+  isWeddingPartyRoute.value
+    ? 'Sample formal outfit inspiration for women'
+    : 'Sample semi-formal outfit inspiration for women',
+)
+const attireDescription = computed(() =>
+  isWeddingPartyRoute.value
+    ? 'We would love for you to wear formal attire. Refined silhouettes and elegant fabrics fit the mood beautifully.'
+    : 'We would love for you to wear semi-formal attire in our boho rustic palette: warm cream and linen, soft peach, terracotta, sage and olive, camel and soft brown, and touches of dusty rose. Natural fabrics and relaxed silhouettes fit the mood beautifully.',
+)
+const attirePaletteHeading = computed(() =>
+  isWeddingPartyRoute.value ? 'Formal color guide' : 'Semi-formal color guide',
+)
+const attirePaletteHint = computed(() =>
+  isWeddingPartyRoute.value
+    ? 'Please follow the assigned shades: Guys in Olive, Girls in Sage.'
+    : 'Mix and match within these tones—no need to match exactly.',
+)
+const displayedAttirePalette = computed(() =>
+  isWeddingPartyRoute.value
+    ? [
+        { label: 'Men - Olive', color: '#6f7a55' },
+        { label: 'Women - Sage', color: '#8fa38f' },
+      ]
+    : attirePalette,
+)
+
 const programItems = [
   {
     time: '3:00 PM',
@@ -89,6 +133,7 @@ const celebrationImages = [
 
 const celebrationStartIndex = ref(0)
 const celebrationVisibleCount = computed(() => (isCompactCelebration.value ? 2 : 3))
+const carouselDirection = ref('next')
 
 const visibleCelebrationImages = computed(() => {
   return Array.from({ length: celebrationVisibleCount.value }, (_, offset) => {
@@ -102,11 +147,13 @@ const visibleCelebrationImages = computed(() => {
 })
 
 function showPreviousCelebrationPhotos() {
+  carouselDirection.value = 'previous'
   celebrationStartIndex.value =
     (celebrationStartIndex.value - 1 + celebrationImages.length) % celebrationImages.length
 }
 
 function showNextCelebrationPhotos() {
+  carouselDirection.value = 'next'
   celebrationStartIndex.value = (celebrationStartIndex.value + 1) % celebrationImages.length
 }
 
@@ -243,7 +290,7 @@ const venue = {
             >
               &lt;
             </button>
-            <div class="inline-gallery">
+            <div :class="['inline-gallery', `inline-gallery--${carouselDirection}`]">
               <div
                 v-for="photo in visibleCelebrationImages"
                 :key="photo.key"
@@ -324,40 +371,22 @@ const venue = {
         <div class="section__inner section__inner--narrow">
           <h2 class="section__title">Dress code</h2>
           <div class="ornament" aria-hidden="true" />
-          <p class="lead">Semi-formal</p>
-          <p class="attire-copy">
-            We would love for you to wear
-            <strong>semi-formal</strong>
-            attire in our
-            <strong>boho rustic</strong>
-            palette: warm cream and linen, soft peach, terracotta, sage and olive, camel and soft
-            brown, and touches of dusty rose. Natural fabrics and relaxed silhouettes fit the mood
-            beautifully.
-          </p>
+          <p class="lead">{{ dressCodeLabel }}</p>
+          <p class="attire-copy">{{ attireDescription }}</p>
           <div class="attire-samples">
             <figure class="attire-sample">
               <figcaption class="attire-sample__label">Sample outfit for men:</figcaption>
-              <img
-                :src="formalAttireGuys"
-                alt="Sample semi-formal outfit inspiration for men"
-                class="attire-sample__image"
-              />
+              <img :src="menAttireImage" :alt="menAttireAlt" class="attire-sample__image" />
             </figure>
             <figure class="attire-sample">
               <figcaption class="attire-sample__label">Sample outfit for women:</figcaption>
-              <img
-                :src="formalAttireGirls"
-                alt="Sample semi-formal outfit inspiration for women"
-                class="attire-sample__image"
-              />
+              <img :src="womenAttireImage" :alt="womenAttireAlt" class="attire-sample__image" />
             </figure>
           </div>
-          <p class="attire-palette-heading">Semi-formal color guide</p>
-          <p class="attire-palette-hint">
-            Mix and match within these tones—no need to match exactly.
-          </p>
+          <p class="attire-palette-heading">{{ attirePaletteHeading }}</p>
+          <p class="attire-palette-hint">{{ attirePaletteHint }}</p>
           <ul class="attire-palette" role="list">
-            <li v-for="swatch in attirePalette" :key="swatch.label" class="attire-swatch">
+            <li v-for="swatch in displayedAttirePalette" :key="swatch.label" class="attire-swatch">
               <span
                 class="attire-swatch__circle"
                 :style="{ backgroundColor: swatch.color }"
@@ -852,6 +881,22 @@ const venue = {
   box-shadow: 0 10px 24px rgba(44, 38, 32, 0.1);
 }
 
+.inline-gallery--next .celebration-photo-card {
+  animation: celebrationSlideInNext 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.inline-gallery--previous .celebration-photo-card {
+  animation: celebrationSlideInPrevious 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.inline-gallery .celebration-photo-card:nth-child(2) {
+  animation-delay: 0.07s;
+}
+
+.inline-gallery .celebration-photo-card:nth-child(3) {
+  animation-delay: 0.14s;
+}
+
 .celebration-photo {
   width: 100%;
   height: 100%;
@@ -881,6 +926,30 @@ const venue = {
   border-color: var(--terracotta-dark);
 }
 
+@keyframes celebrationSlideInNext {
+  from {
+    opacity: 0;
+    transform: translate3d(14px, 0, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes celebrationSlideInPrevious {
+  from {
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (max-width: 640px) {
   .inline-gallery {
     width: min(100%, 360px);
@@ -901,6 +970,13 @@ const venue = {
   .carousel-control {
     align-self: center;
     justify-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inline-gallery--next .celebration-photo-card,
+  .inline-gallery--previous .celebration-photo-card {
+    animation: none;
   }
 }
 
