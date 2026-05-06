@@ -86,7 +86,7 @@ const attirePaletteHeading = computed(() =>
 )
 const attirePaletteHint = computed(() =>
   isWeddingPartyRoute.value
-    ? 'Please follow the assigned shades: Guys in Olive, Girls in Sage.'
+    ? 'Please follow the assigned shades: Men in Olive, Women in Sage.'
     : 'Mix and match within these tones—no need to match exactly.',
 )
 const displayedAttirePalette = computed(() =>
