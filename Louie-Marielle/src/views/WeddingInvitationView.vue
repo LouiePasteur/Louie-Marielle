@@ -297,6 +297,18 @@ const venue = {
         </div>
       </section>
 
+      <section id="gift-guide" class="section section--paper reveal-on-scroll">
+        <div class="section__inner section__inner--narrow">
+          <h2 class="section__title">Gift Guide</h2>
+          <div class="ornament" aria-hidden="true" />
+          <p class="rsvp-intro">
+            With all that we have, we are truly blessed. Your presence and prayers are all we ask
+            but if you wish to bless us further, a monetary gift would be most appreciated as we
+            begin this new chapter together.
+          </p>
+        </div>
+      </section>
+
       <section id="rsvp" class="section section--paper section--rsvp reveal-on-scroll">
         <div class="section__inner section__inner--narrow">
           <h2 class="section__title">RSVP</h2>
