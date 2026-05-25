@@ -1,7 +1,5 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 import heroImage from '../assets/images/hero.jpg'
 import celebration1 from '../assets/images/1.jpg'
 import celebration2 from '../assets/images/2.jpg'
@@ -12,42 +10,13 @@ import celebration6 from '../assets/images/6.jpg'
 import celebration7 from '../assets/images/7.jpg'
 import celebration8 from '../assets/images/8.jpg'
 import celebration9 from '../assets/images/9.jpg'
-import semiFormalAttireGuys from '../assets/images/semiformal-attire-guys.png'
-import semiFormalAttireGirls from '../assets/images/semiformal-attire-girls.png'
-import formalAttireGuys from '../assets/images/formal-attire-guys.png'
-import formalAttireGirls from '../assets/images/formal-attire-girls.png'
-
-const store = useStore()
-const route = useRoute()
 
 const navOpen = ref(false)
 const scrolled = ref(false)
 const isCompactCelebration = ref(false)
 
-const rsvpSubmitted = ref(false)
-const rsvpSubmitting = computed(() => store.state.rsvpSubmitting)
-const rsvpError = computed(() => store.state.rsvpError)
-const emailValidationPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const isEmailFormatValid = computed(() => {
-  const email = rsvp.value.email.trim()
-  return emailValidationPattern.test(email)
-})
-const emailValidationError = computed(() => {
-  const email = rsvp.value.email.trim()
-  if (!email) return ''
-  return isEmailFormatValid.value ? '' : 'Please enter a valid email address.'
-})
-const isRsvpFormValid = computed(() => {
-  const { fullName, email, attendance } = rsvp.value
-  return Boolean(fullName.trim() && email.trim() && attendance && isEmailFormatValid.value)
-})
-
-const rsvp = ref({
-  fullName: '',
-  email: '',
-  attendance: '',
-  message: '',
-})
+const rsvpFormUrl =
+  'https://docs.google.com/forms/d/e/1FAIpQLSdhuo8uQbv7YVD0QtZrRnKayMxpmKBecSYvqpPen_z-Vwg85g/viewform'
 
 const attirePalette = [
   { label: 'Blushing Peach', color: '#efa59a' },
@@ -58,66 +27,18 @@ const attirePalette = [
   { label: 'Dusty rose', color: '#c9a09a' },
 ]
 
-const isWeddingPartyRoute = computed(() => route.path === '/wedding-party')
-const dressCodeLabel = computed(() => (isWeddingPartyRoute.value ? 'Formal' : 'Semi-formal'))
-const menAttireImage = computed(() =>
-  isWeddingPartyRoute.value ? formalAttireGuys : semiFormalAttireGuys,
-)
-const womenAttireImage = computed(() =>
-  isWeddingPartyRoute.value ? formalAttireGirls : semiFormalAttireGirls,
-)
-const menAttireAlt = computed(() =>
-  isWeddingPartyRoute.value
-    ? 'Sample formal outfit inspiration for men'
-    : 'Sample semi-formal outfit inspiration for men',
-)
-const womenAttireAlt = computed(() =>
-  isWeddingPartyRoute.value
-    ? 'Sample formal outfit inspiration for women'
-    : 'Sample semi-formal outfit inspiration for women',
-)
-const attireDescription = computed(() =>
-  isWeddingPartyRoute.value
-    ? 'We would love for you to wear formal attire. Refined silhouettes and elegant fabrics fit the mood beautifully.'
-    : 'We would love for you to wear semi-formal attire in our boho rustic palette: warm cream and linen, soft peach, terracotta, sage and olive, camel and soft brown, and touches of dusty rose. Natural fabrics and relaxed silhouettes fit the mood beautifully.',
-)
-const attirePaletteHeading = computed(() =>
-  isWeddingPartyRoute.value ? 'Formal color guide' : 'Semi-formal color guide',
-)
-const attirePaletteHint = computed(() =>
-  isWeddingPartyRoute.value
-    ? 'Please follow the assigned shades: Men in Olive, Women in Sage.'
-    : 'Mix and match within these tones—no need to match exactly.',
-)
-const displayedAttirePalette = computed(() =>
-  isWeddingPartyRoute.value
-    ? [
-        { label: 'Men - Olive', color: '#6f7a55' },
-        { label: 'Women - Sage', color: '#8fa38f' },
-      ]
-    : attirePalette,
-)
+const entourageDressCode = {
+  label: 'Formal',
+  description:
+    'We would love for our entourage to wear formal attire. Elegant silhouettes and polished fabrics will complement the celebration beautifully.',
+  colors: [{ value: 'Sage Green', color: '#8fa38f' }],
+}
 
-const programItems = [
-  {
-    time: '3:00 PM',
-    title: 'Guest arrival',
-    detail: 'Registration and light refreshments at the venue.',
-  },
-  { time: '3:30 PM', title: 'Ceremony', detail: 'Exchange of vows with family and friends.' },
-  { time: '4:15 PM', title: 'Cocktail hour', detail: 'Drinks, conversation, and photos.' },
-  {
-    time: '5:00 PM',
-    title: 'Reception',
-    detail: 'Dinner is served; celebrate together at the table.',
-  },
-  {
-    time: '6:30 PM',
-    title: 'Toasts & cake',
-    detail: 'Kind words, sweetness, and a little dancing.',
-  },
-  { time: '7:00 PM', title: 'Send-off', detail: 'Thank you for sharing this day with us.' },
-]
+const guestDressCode = {
+  label: 'Semi-formal',
+  description:
+    'We would love for our guests to wear semi-formal attire in our boho rustic palette. Natural fabrics and relaxed silhouettes fit the mood beautifully.',
+}
 
 const celebrationImages = [
   celebration1,
@@ -155,17 +76,6 @@ function showPreviousCelebrationPhotos() {
 function showNextCelebrationPhotos() {
   carouselDirection.value = 'next'
   celebrationStartIndex.value = (celebrationStartIndex.value + 1) % celebrationImages.length
-}
-
-async function submitRsvp() {
-  if (rsvpSubmitting.value || !isRsvpFormValid.value) return
-
-  try {
-    await store.dispatch('submitRsvp', rsvp.value)
-    rsvpSubmitted.value = true
-  } catch {
-    /* error message is in store */
-  }
 }
 
 function onScroll() {
@@ -238,7 +148,6 @@ const venue = {
       <nav class="nav" :class="{ 'nav--open': navOpen }">
         <a href="#hero" @click="closeNav">Home</a>
         <a href="#celebration" @click="closeNav">Celebration</a>
-        <a href="#program" @click="closeNav">Program</a>
         <a href="#venue" @click="closeNav">Venue</a>
         <a href="#attire" @click="closeNav">Attire</a>
         <a href="#rsvp" @click="closeNav">RSVP</a>
@@ -311,31 +220,6 @@ const venue = {
         </div>
       </section>
 
-      <section id="program" class="section section--paper section--program reveal-on-scroll">
-        <div class="section__inner">
-          <h2 class="section__title">Program</h2>
-          <div class="ornament" aria-hidden="true" />
-          <p class="program-intro">
-            A gentle flow for our afternoon together. Times may shift slightly so everyone can relax
-            and enjoy the moment.
-          </p>
-          <ol class="program-timeline">
-            <li
-              v-for="(item, index) in programItems"
-              :key="index"
-              class="program-step"
-              :class="index % 2 === 0 ? 'program-step--left' : 'program-step--right'"
-            >
-              <div class="program-step__body">
-                <p class="program-step__time">{{ item.time }}</p>
-                <h3 class="program-step__title">{{ item.title }}</h3>
-                <p class="program-step__detail">{{ item.detail }}</p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </section>
-
       <section id="venue" class="section section--sage reveal-on-scroll">
         <div class="section__inner">
           <h2 class="section__title section__title--light">Find us</h2>
@@ -371,32 +255,45 @@ const venue = {
         <div class="section__inner section__inner--narrow">
           <h2 class="section__title">Dress code</h2>
           <div class="ornament" aria-hidden="true" />
-          <p class="lead">{{ dressCodeLabel }}</p>
-          <p class="attire-copy">{{ attireDescription }}</p>
-          <div class="attire-samples">
-            <figure class="attire-sample">
-              <figcaption class="attire-sample__label">Sample outfit for men:</figcaption>
-              <img :src="menAttireImage" :alt="menAttireAlt" class="attire-sample__image" />
-            </figure>
-            <figure class="attire-sample">
-              <figcaption class="attire-sample__label">Sample outfit for women:</figcaption>
-              <img :src="womenAttireImage" :alt="womenAttireAlt" class="attire-sample__image" />
-            </figure>
+          <div class="attire-group">
+            <p class="attire-group__eyebrow">For Entourage</p>
+            <p class="lead">{{ entourageDressCode.label }}</p>
+            <p class="attire-copy">{{ entourageDressCode.description }}</p>
+            <div class="attire-role-grid attire-role-grid--single">
+              <div
+                v-for="entry in entourageDressCode.colors"
+                :key="entry.value"
+                class="attire-role-card attire-role-card--plain"
+              >
+                <span
+                  class="attire-role-card__swatch"
+                  :style="{ backgroundColor: entry.color }"
+                  :aria-label="`Assigned entourage color: ${entry.value}`"
+                  role="img"
+                />
+                <p class="attire-role-card__value">{{ entry.value }}</p>
+              </div>
+            </div>
           </div>
-          <p class="attire-palette-heading">{{ attirePaletteHeading }}</p>
-          <p class="attire-palette-hint">{{ attirePaletteHint }}</p>
-          <ul class="attire-palette" role="list">
-            <li v-for="swatch in displayedAttirePalette" :key="swatch.label" class="attire-swatch">
-              <span
-                class="attire-swatch__circle"
-                :style="{ backgroundColor: swatch.color }"
-                :aria-label="`Suggested color: ${swatch.label}`"
-                role="img"
-              />
-              <span class="attire-swatch__label">{{ swatch.label }}</span>
-            </li>
-          </ul>
-          <p class="attire-note">Please skip stark black, neon colors, or all-white outfits.</p>
+
+          <div class="attire-group">
+            <p class="attire-group__eyebrow">For Guest</p>
+            <p class="lead">{{ guestDressCode.label }}</p>
+            <p class="attire-copy">{{ guestDressCode.description }}</p>
+            <p class="attire-palette-heading">Colors</p>
+            <ul class="attire-palette" role="list">
+              <li v-for="swatch in attirePalette" :key="swatch.label" class="attire-swatch">
+                <span
+                  class="attire-swatch__circle"
+                  :style="{ backgroundColor: swatch.color }"
+                  :aria-label="`Suggested color: ${swatch.label}`"
+                  role="img"
+                />
+                <span class="attire-swatch__label">{{ swatch.label }}</span>
+              </li>
+            </ul>
+            <p class="attire-note">Please skip stark black, neon colors, or all-white outfits.</p>
+          </div>
         </div>
       </section>
 
@@ -408,89 +305,15 @@ const venue = {
             Kindly let us know if you can celebrate with us so we can plan seating and catering with
             care.
           </p>
-
-          <div v-if="rsvpSubmitted" class="rsvp-success" role="status">
-            <p class="rsvp-success__title">Thank you</p>
-            <p class="rsvp-success__text">
-              Your response has been noted. We’re so grateful you took a moment to reply.
-            </p>
-          </div>
-
-          <form v-else class="rsvp-form" @submit.prevent="submitRsvp">
-            <div class="form-field">
-              <label class="form-label" for="rsvp-name"
-                >Full name <span class="required-asterisk" aria-hidden="true">*</span></label
-              >
-              <input
-                id="rsvp-name"
-                v-model="rsvp.fullName"
-                class="form-input"
-                type="text"
-                name="fullName"
-                autocomplete="name"
-                required
-              />
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="rsvp-email"
-                >Email <span class="required-asterisk" aria-hidden="true">*</span></label
-              >
-              <input
-                id="rsvp-email"
-                v-model="rsvp.email"
-                class="form-input"
-                type="email"
-                name="email"
-                autocomplete="email"
-                required
-              />
-              <p v-if="emailValidationError" class="form-error" role="alert">
-                {{ emailValidationError }}
-              </p>
-            </div>
-            <fieldset class="form-field form-field--fieldset">
-              <legend class="form-label">
-                Will you attend? <span class="required-asterisk" aria-hidden="true">*</span>
-              </legend>
-              <div class="form-radios">
-                <label class="form-radio">
-                  <input
-                    v-model="rsvp.attendance"
-                    type="radio"
-                    name="attendance"
-                    value="yes"
-                    required
-                  />
-                  <span>Joyfully accepts</span>
-                </label>
-                <label class="form-radio">
-                  <input v-model="rsvp.attendance" type="radio" name="attendance" value="no" />
-                  <span>Regretfully declines</span>
-                </label>
-              </div>
-            </fieldset>
-            <div class="form-field">
-              <label class="form-label" for="rsvp-message"
-                >Dietary needs or a note (optional)</label
-              >
-              <textarea
-                id="rsvp-message"
-                v-model="rsvp.message"
-                class="form-textarea"
-                name="message"
-                rows="3"
-              />
-            </div>
-            <p v-if="rsvpError" class="form-error" role="alert">{{ rsvpError }}</p>
-            <p class="form-note">Your RSVP is saved for Louie &amp; Marielle’s guest list.</p>
-            <button
-              type="submit"
-              class="form-submit"
-              :disabled="rsvpSubmitting || !isRsvpFormValid"
-            >
-              {{ rsvpSubmitting ? 'Sending…' : 'Send RSVP' }}
-            </button>
-          </form>
+          <a class="rsvp-cta" :href="rsvpFormUrl" target="_blank" rel="noopener noreferrer">
+            Open RSVP Form
+          </a>
+          <p class="rsvp-note">
+            <i>
+              Please note: This RSVP is for invited guests only. We're not able to accommodate
+              plus-ones or uninvited guests due to venue capacity. Thank you for understanding!
+            </i>
+          </p>
         </div>
       </section>
 
@@ -1036,41 +859,71 @@ const venue = {
   color: rgba(44, 38, 32, 0.92);
 }
 
-.attire-samples {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-  max-width: 40rem;
-  margin-left: auto;
-  margin-right: auto;
+.attire-group + .attire-group {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(196, 165, 116, 0.3);
 }
 
-.attire-sample {
+.attire-group__eyebrow {
   margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
 }
 
-.attire-sample__label {
-  margin: 0 0 0.5rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--sage-dark);
-  font-weight: 600;
+.attire-role-grid {
+  margin: 1.5rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 28rem;
 }
 
-.attire-sample__image {
-  display: block;
-  width: 100%;
-  height: auto;
+.attire-role-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 10rem;
+}
+
+.attire-role-card {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(196, 165, 116, 0.3);
   border-radius: 2px;
-  border: 1px solid rgba(196, 165, 116, 0.35);
-  box-shadow: 0 10px 30px rgba(44, 38, 32, 0.1);
+  box-shadow: 0 10px 24px rgba(44, 38, 32, 0.06);
+}
+
+.attire-role-card--plain {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.attire-role-card__swatch {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0.85rem auto 0.6rem;
+  border-radius: 50%;
+  border: 1px solid rgba(74, 63, 54, 0.18);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    0 4px 12px rgba(44, 38, 32, 0.12);
+}
+
+.attire-role-card__value {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(44, 38, 32, 0.82);
 }
 
 .attire-palette-heading {
-  margin: 2rem 0 0.35rem;
+  margin: 1.75rem 0 0.75rem;
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.05rem;
@@ -1134,134 +987,6 @@ const venue = {
   margin-top: 1.75rem;
 }
 
-.section--program {
-  background: linear-gradient(180deg, var(--cream) 0%, var(--parchment) 45%, var(--cream) 100%);
-}
-
-.program-intro {
-  margin: 0 auto 2rem;
-  max-width: 36rem;
-  text-align: center;
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: rgba(44, 38, 32, 0.88);
-}
-
-.program-timeline {
-  position: relative;
-  list-style: none;
-  margin: 0 auto;
-  padding: 0.35rem 0 0;
-  max-width: 760px;
-}
-
-.program-timeline::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    180deg,
-    rgba(184, 107, 82, 0.45),
-    rgba(138, 155, 126, 0.38),
-    rgba(138, 155, 126, 0.28)
-  );
-  border-radius: 1px;
-}
-
-.program-step {
-  position: relative;
-  padding-bottom: 2rem;
-}
-
-.program-step:last-child {
-  padding-bottom: 0;
-}
-
-.program-step::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0.35rem;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  transform: translateX(-50%);
-  background: var(--cream);
-  border: 2px solid var(--terracotta);
-  box-shadow: 0 0 0 3px rgba(196, 165, 116, 0.35);
-  z-index: 1;
-}
-
-.program-step__body {
-  width: calc(50% - 1.85rem);
-  box-sizing: border-box;
-}
-
-.program-step--left .program-step__body {
-  margin-right: auto;
-  text-align: right;
-  padding-right: 0.35rem;
-}
-
-.program-step--right .program-step__body {
-  margin-left: auto;
-  text-align: left;
-  padding-left: 0.35rem;
-}
-
-@media (max-width: 700px) {
-  .program-timeline::before {
-    left: 11px;
-    transform: none;
-  }
-
-  .program-step::before {
-    left: 11px;
-    transform: translateX(-50%);
-  }
-
-  .program-step__body {
-    width: auto;
-  }
-
-  .program-step--left .program-step__body,
-  .program-step--right .program-step__body {
-    margin-left: 2.35rem;
-    margin-right: 0;
-    text-align: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.program-step__time {
-  margin: 0 0 0.2rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--terracotta-dark);
-}
-
-.program-step__title {
-  margin: 0 0 0.35rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: var(--bark);
-}
-
-.program-step__detail {
-  margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.6;
-  color: rgba(44, 38, 32, 0.88);
-}
-
 .section--rsvp {
   padding-bottom: 4.5rem;
 }
@@ -1274,101 +999,13 @@ const venue = {
   color: rgba(44, 38, 32, 0.88);
 }
 
-.rsvp-form {
-  margin-top: 0.5rem;
-}
-
-.form-field {
-  margin-bottom: 1.25rem;
-}
-
-.form-field--fieldset {
-  border: none;
-  padding: 0;
-  margin: 0 0 1.25rem;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.88rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--sage-dark);
-}
-
-.required-asterisk {
-  color: #b3261e;
-}
-
-.form-input,
-.form-textarea {
-  width: 100%;
-  padding: 0.65rem 0.75rem;
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 1rem;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(196, 165, 116, 0.45);
-  border-radius: 2px;
-  box-shadow: inset 0 1px 2px rgba(44, 38, 32, 0.04);
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: var(--terracotta);
-  box-shadow: 0 0 0 3px rgba(184, 107, 82, 0.2);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 5rem;
-}
-
-.form-radios {
+.rsvp-cta {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.35rem;
-}
-
-.form-radio {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.55rem;
-  font-size: 1rem;
-  line-height: 1.45;
-  color: rgba(44, 38, 32, 0.92);
-  cursor: pointer;
-}
-
-.form-radio input {
-  margin-top: 0.2rem;
-  accent-color: var(--terracotta-dark);
-}
-
-.form-note {
-  margin: 0 0 1.25rem;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  font-style: italic;
-  color: rgba(44, 38, 32, 0.65);
-}
-
-.form-error {
-  margin: 0 0 0.75rem;
-  font-size: 0.9rem;
-  line-height: 1.45;
-  color: #8b3a3a;
-}
-
-.form-submit {
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  max-width: 20rem;
+  margin: 0 auto;
   padding: 0.75rem 1.25rem;
   font-family: 'Source Sans 3', sans-serif;
   font-size: 0.8rem;
@@ -1377,49 +1014,33 @@ const venue = {
   text-transform: uppercase;
   color: var(--cream);
   background: var(--terracotta-dark);
-  border: none;
+  text-decoration: none;
   border-radius: 2px;
   cursor: pointer;
   transition:
     background 0.2s,
-    opacity 0.2s;
+    transform 0.2s;
 }
 
-.form-submit:hover:not(:disabled) {
+.rsvp-cta:hover {
   background: var(--bark);
+  transform: translateY(-1px);
 }
 
-.form-submit:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.rsvp-success {
+.rsvp-note {
+  margin: 1rem auto 0;
+  max-width: 34rem;
   text-align: center;
-  padding: 2rem 1.25rem;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(196, 165, 116, 0.4);
-  border-radius: 2px;
-  box-shadow: 0 8px 28px rgba(44, 38, 32, 0.08);
-}
-
-.rsvp-success__title {
-  margin: 0 0 0.5rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--bark);
-}
-
-.rsvp-success__text {
-  margin: 0 0 1.25rem;
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: rgba(44, 38, 32, 0.88);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(44, 38, 32, 0.74);
 }
 
 .footer {
-  padding: 2.5rem 1.25rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.25rem 2.5rem;
   text-align: center;
   background: var(--bark);
   color: rgba(247, 243, 236, 0.88);
