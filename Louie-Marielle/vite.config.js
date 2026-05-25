@@ -11,6 +11,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: mode === 'production' ? '/Louie-Marielle/' : '/',
+    build: {
+      outDir: '../docs',
+      emptyOutDir: true,
+    },
     plugins: [
       vue(),
       vueDevTools(),
