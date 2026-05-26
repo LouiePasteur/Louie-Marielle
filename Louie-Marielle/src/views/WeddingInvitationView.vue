@@ -176,8 +176,9 @@ const venue = {
           <div class="details-grid">
             <article class="detail-card">
               <h3 class="detail-card__label">When</h3>
-              <p class="detail-card__value">3:00 PM – 7:00 PM</p>
+              <p class="detail-card__value">July 25, 2026</p>
               <p class="detail-card__hint">
+                3:00 PM – 7:00 PM<br />
                 Kindly arrive on time so we can celebrate every moment.
               </p>
             </article>
