@@ -67,6 +67,9 @@ const visibleCelebrationImages = computed(() => {
   })
 })
 
+const CELEBRATION_AUTOPLAY_MS = 2000
+let celebrationTimer = null
+
 function showPreviousCelebrationPhotos() {
   carouselDirection.value = 'previous'
   celebrationStartIndex.value =
@@ -76,6 +79,23 @@ function showPreviousCelebrationPhotos() {
 function showNextCelebrationPhotos() {
   carouselDirection.value = 'next'
   celebrationStartIndex.value = (celebrationStartIndex.value + 1) % celebrationImages.length
+}
+
+function startCelebrationAutoplay() {
+  if (celebrationTimer) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  celebrationTimer = window.setInterval(showNextCelebrationPhotos, CELEBRATION_AUTOPLAY_MS)
+}
+
+function stopCelebrationAutoplay() {
+  if (!celebrationTimer) return
+  window.clearInterval(celebrationTimer)
+  celebrationTimer = null
+}
+
+function restartCelebrationAutoplay() {
+  stopCelebrationAutoplay()
+  startCelebrationAutoplay()
 }
 
 function onScroll() {
@@ -112,6 +132,8 @@ onMounted(() => {
   document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
     revealObserver.observe(el)
   })
+
+  startCelebrationAutoplay()
 })
 
 onUnmounted(() => {
@@ -119,7 +141,139 @@ onUnmounted(() => {
   window.removeEventListener('resize', syncCelebrationLayout)
   revealObserver?.disconnect()
   revealObserver = null
+  stopCelebrationAutoplay()
 })
+
+const entourageRows = [
+  {
+    type: 'pair',
+    roles: [
+      { title: 'Parents of the Groom', names: ['Pastor Pantoja', 'Ofelia Pantoja'] },
+      { title: 'Parents of the Bride', names: ['Mario Camba', 'Rosebelle Camba'] },
+    ],
+  },
+  {
+    type: 'feature',
+    role: {
+      title: 'Principal Sponsors',
+      subtitle: 'To stand as witness to our vows',
+      columns: [
+        ['Romeo V. Bathan', 'Ma. Luzviminda N. Bathan', 'Nicolai Manalo', 'Paul Manalo'],
+        ['Romnick Anda', 'Salie Anda', 'Alwyn Firme', 'Salen Sambillo'],
+      ],
+    },
+  },
+  {
+    type: 'pair',
+    roles: [
+      { title: 'Best Man', names: ['Luigi Bathan'] },
+      { title: 'Maid of Honor', names: ['Rianette Grajo'] },
+    ],
+  },
+  {
+    type: 'single',
+    role: {
+      title: 'Cord',
+      subtitle: 'To bind us together in unity',
+      names: ['Romeo V. Bathan', 'Ma. Luzviminda N. Bathan'],
+    },
+  },
+  {
+    type: 'pair',
+    roles: [
+      {
+        title: 'Groomsmen',
+        names: [
+          'John Karl Par',
+          'Lou Renzo Sumilang',
+          'Roamel Aquino',
+          'Jerwin Cabrera',
+          'Leo Manjares',
+          'Adam Ibarrola',
+          'John Mark Camba',
+        ],
+      },
+      {
+        title: 'Bridesmaids',
+        names: [
+          'Jerizza Par',
+          'Chelsea Ibanez',
+          'Veya Real',
+          'Jahleel Quinones',
+          'Raven Villaroman',
+          'Liezl Evangelista',
+          'Edessa Valenzuela',
+        ],
+      },
+    ],
+  },
+  {
+    type: 'pair',
+    roles: [
+      { title: 'Candle', subtitle: 'To light our path', names: ['Romnick Anda', 'Salie Anda'] },
+      { title: 'Veil', subtitle: 'To clothe us in love', names: ['Nicolai Manalo', 'Paul Manalo'] },
+    ],
+  },
+  {
+    type: 'pair',
+    roles: [
+      { title: 'Ring Bearer', subtitle: 'To carry our symbol of love', names: ['John Mark Camba'] },
+      { title: 'Bible Bearer', subtitle: 'To carry our symbol of faith', names: ['Ralph Camba'] },
+    ],
+  },
+  {
+    type: 'single',
+    role: {
+      title: 'Coin Bearer',
+      subtitle: 'To carry our symbol of treasure',
+      names: ['Harrey Torbeles'],
+    },
+  },
+]
+
+const faqs = [
+  {
+    question: 'Is there parking space available?',
+    answer:
+      'Yes. Parking is available on a first-come, first-served basis, so we recommend arriving a little early to settle in comfortably.',
+  },
+  {
+    question: 'May I bring a plus-one?',
+    answer:
+      'Our celebration is strictly by invitation only and our venue has a limited capacity, so we are unable to accommodate plus-ones. Thank you for understanding!',
+  },
+  {
+    question: 'Are children invited?',
+    answer:
+      'This is an adults-only celebration. Aside from the little ones in our wedding party, we kindly ask that children be left in the care of a loved one for the day.',
+  },
+  {
+    question: 'When is the appropriate time to leave?',
+    answer:
+      'We have poured months of planning into this day and would love for you to stay through the entire program so we can celebrate every moment together.',
+  },
+  {
+    question: 'Can I sit anywhere at the reception?',
+    answer:
+      'Seating is pre-arranged for everyone’s convenience. Our coordinators will be happy to help you find your designated seat.',
+  },
+  {
+    question: 'May I take photos or videos during the ceremony?',
+    answer:
+      'Our ceremony is unplugged and camera-free — we would love for you to be fully present with us. You are most welcome to take all the photos and videos you like at the reception.',
+  },
+  {
+    question: 'How can I help make the day great?',
+    answer:
+      'Pray for lovely weather, RSVP promptly, dress in our motif, arrive on time, follow the seating arrangements, stay until the program ends, and join in the fun. Your presence and warmth mean the world to us.',
+  },
+]
+
+const openFaq = ref(null)
+
+function toggleFaq(index) {
+  openFaq.value = openFaq.value === index ? null : index
+}
 
 const venue = {
   name: "Alberto's Event Center",
@@ -149,7 +303,9 @@ const venue = {
         <a href="#hero" @click="closeNav">Home</a>
         <a href="#celebration" @click="closeNav">Celebration</a>
         <a href="#venue" @click="closeNav">Venue</a>
+        <a href="#entourage" @click="closeNav">Entourage</a>
         <a href="#attire" @click="closeNav">Attire</a>
+        <a href="#faq" @click="closeNav">FAQ</a>
         <a href="#rsvp" @click="closeNav">RSVP</a>
       </nav>
     </header>
@@ -191,12 +347,16 @@ const venue = {
               </p>
             </article>
           </div>
-          <div class="celebration-carousel">
+          <div
+            class="celebration-carousel"
+            @mouseenter="stopCelebrationAutoplay"
+            @mouseleave="startCelebrationAutoplay"
+          >
             <button
               type="button"
               class="carousel-control"
               aria-label="Show previous celebration photos"
-              @click="showPreviousCelebrationPhotos"
+              @click="showPreviousCelebrationPhotos(), restartCelebrationAutoplay()"
             >
               &lt;
             </button>
@@ -213,7 +373,7 @@ const venue = {
               type="button"
               class="carousel-control"
               aria-label="Show next celebration photos"
-              @click="showNextCelebrationPhotos"
+              @click="showNextCelebrationPhotos(), restartCelebrationAutoplay()"
             >
               &gt;
             </button>
@@ -249,6 +409,58 @@ const venue = {
           >
             Open in Google Maps
           </a>
+        </div>
+      </section>
+
+      <section id="entourage" class="section section--paper reveal-on-scroll">
+        <div class="section__inner">
+          <p class="entourage-eyebrow">The</p>
+          <h2 class="entourage-title">Entourage</h2>
+          <div class="ornament" aria-hidden="true" />
+
+          <div class="entourage-rows">
+            <template v-for="(row, rowIndex) in entourageRows" :key="rowIndex">
+              <div v-if="row.type === 'pair'" class="entourage-row entourage-row--pair">
+                <div v-for="role in row.roles" :key="role.title" class="entourage-role">
+                  <h3 class="entourage-role__title">{{ role.title }}</h3>
+                  <p v-if="role.subtitle" class="entourage-role__subtitle">{{ role.subtitle }}</p>
+                  <ul class="entourage-names" role="list">
+                    <li v-for="name in role.names" :key="name">{{ name }}</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                v-else-if="row.type === 'feature'"
+                class="entourage-row entourage-row--feature entourage-role"
+              >
+                <h3 class="entourage-role__title">{{ row.role.title }}</h3>
+                <p v-if="row.role.subtitle" class="entourage-role__subtitle">
+                  {{ row.role.subtitle }}
+                </p>
+                <div class="entourage-columns">
+                  <ul
+                    v-for="(column, colIndex) in row.role.columns"
+                    :key="colIndex"
+                    class="entourage-names"
+                    role="list"
+                  >
+                    <li v-for="name in column" :key="name">{{ name }}</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div v-else class="entourage-row entourage-row--single entourage-role">
+                <h3 class="entourage-role__title">{{ row.role.title }}</h3>
+                <p v-if="row.role.subtitle" class="entourage-role__subtitle">
+                  {{ row.role.subtitle }}
+                </p>
+                <ul class="entourage-names" role="list">
+                  <li v-for="name in row.role.names" :key="name">{{ name }}</li>
+                </ul>
+              </div>
+            </template>
+          </div>
         </div>
       </section>
 
@@ -295,6 +507,29 @@ const venue = {
             </ul>
             <p class="attire-note">Please skip stark black, neon colors, or all-white outfits.</p>
           </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section section--sage reveal-on-scroll">
+        <div class="section__inner section__inner--narrow">
+          <h2 class="section__title section__title--light">Frequently asked questions</h2>
+          <div class="ornament ornament--light" aria-hidden="true" />
+          <ul class="faq-list" role="list">
+            <li v-for="(faq, index) in faqs" :key="faq.question" class="faq-item">
+              <button
+                type="button"
+                class="faq-question"
+                :aria-expanded="openFaq === index"
+                @click="toggleFaq(index)"
+              >
+                <span class="faq-question__text">{{ faq.question }}</span>
+                <span class="faq-question__icon" aria-hidden="true">{{
+                  openFaq === index ? '–' : '+'
+                }}</span>
+              </button>
+              <p v-show="openFaq === index" class="faq-answer">{{ faq.answer }}</p>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -1051,5 +1286,181 @@ const venue = {
   margin: 0;
   font-family: 'Great Vibes', cursive;
   font-size: 1.75rem;
+}
+
+.entourage-eyebrow {
+  margin: 0;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--bark);
+}
+
+.entourage-title {
+  margin: 0;
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: clamp(2.75rem, 9vw, 4rem);
+  line-height: 1.05;
+  color: var(--sage-dark);
+}
+
+.entourage-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+  margin-top: 0.5rem;
+}
+
+.entourage-row--pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 2.5rem;
+  align-items: start;
+}
+
+.entourage-role {
+  text-align: center;
+}
+
+.entourage-role__title {
+  margin: 0;
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 4vw, 2.1rem);
+  line-height: 1.2;
+  color: var(--sage-dark);
+}
+
+.entourage-role__subtitle {
+  margin: 0.15rem 0 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+}
+
+.entourage-names {
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.entourage-names li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.18rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.entourage-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 2.5rem;
+}
+
+.entourage-columns .entourage-names {
+  margin-top: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .entourage-rows {
+    gap: 2.25rem;
+  }
+
+  .entourage-row--pair {
+    gap: 1.25rem 1.25rem;
+  }
+
+  .entourage-names li {
+    font-size: 1.05rem;
+  }
+}
+
+.faq-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.faq-item {
+  border-bottom: 1px solid rgba(247, 243, 236, 0.25);
+}
+
+.faq-item:first-child {
+  border-top: 1px solid rgba(247, 243, 236, 0.25);
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 0.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #f7f3ec;
+  transition: color 0.2s ease;
+}
+
+.faq-question:hover {
+  color: #fff;
+}
+
+.faq-question__icon {
+  flex-shrink: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--wheat);
+  border: 1px solid rgba(247, 243, 236, 0.4);
+  border-radius: 50%;
+}
+
+.faq-answer {
+  margin: 0;
+  padding: 0 0.25rem 1.25rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(247, 243, 236, 0.92);
+  animation: faqReveal 0.3s ease both;
+}
+
+@keyframes faqReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-answer {
+    animation: none;
+  }
 }
 </style>
