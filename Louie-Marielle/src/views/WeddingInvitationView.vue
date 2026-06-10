@@ -181,6 +181,13 @@ const entourageRows = [
   {
     type: 'pair',
     roles: [
+      { title: 'Candle', subtitle: 'To light our path', names: ['Romnick Anda', 'Salie Anda'] },
+      { title: 'Veil', subtitle: 'To clothe us in love', names: ['Nicolai Manalo', 'Paul Manalo'] },
+    ],
+  },
+  {
+    type: 'pair',
+    roles: [
       {
         title: 'Groomsmen',
         names: [
@@ -205,13 +212,6 @@ const entourageRows = [
           'Edessa Valenzuela',
         ],
       },
-    ],
-  },
-  {
-    type: 'pair',
-    roles: [
-      { title: 'Candle', subtitle: 'To light our path', names: ['Romnick Anda', 'Salie Anda'] },
-      { title: 'Veil', subtitle: 'To clothe us in love', names: ['Nicolai Manalo', 'Paul Manalo'] },
     ],
   },
   {
