@@ -206,7 +206,7 @@ const entourageRows = [
           'Jerizza Par',
           'Chelsea Ibanez',
           'Veya Real',
-          'Jahleel Quinones',
+          'Jahleel Gamoyao',
           'Raven Villaroman',
           'Liezl Evangelista',
           'Edessa Valenzuela',
