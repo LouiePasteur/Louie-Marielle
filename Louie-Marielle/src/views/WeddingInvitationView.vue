@@ -421,6 +421,11 @@ const venue = {
           <h2 class="entourage-title">Entourage</h2>
           <div class="ornament" aria-hidden="true" />
 
+          <p class="entourage-calltime">
+            <span class="entourage-calltime__label">Entourage Call Time</span>
+            <span class="entourage-calltime__value">11:00 AM – 12:00 NN</span>
+          </p>
+
           <div class="entourage-rows">
             <template v-for="(row, rowIndex) in entourageRows" :key="rowIndex">
               <div v-if="row.type === 'pair'" class="entourage-row entourage-row--pair">
@@ -1382,11 +1387,39 @@ const venue = {
   color: var(--sage-dark);
 }
 
+.entourage-calltime {
+  margin: 1.75rem auto 0;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.85rem 1.75rem;
+  text-align: center;
+  border: 1px solid rgba(143, 163, 143, 0.5);
+  border-radius: 2px;
+  background: rgba(143, 163, 143, 0.1);
+}
+
+.entourage-calltime__label {
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+}
+
+.entourage-calltime__value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+}
+
 .entourage-rows {
   display: flex;
   flex-direction: column;
   gap: 2.75rem;
-  margin-top: 0.5rem;
+  margin-top: 2rem;
 }
 
 .entourage-row--pair {
