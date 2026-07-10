@@ -19,25 +19,24 @@ const rsvpFormUrl =
   'https://docs.google.com/forms/d/e/1FAIpQLSdhuo8uQbv7YVD0QtZrRnKayMxpmKBecSYvqpPen_z-Vwg85g/viewform'
 
 const attirePalette = [
-  { label: 'Blushing Peach', color: '#efa59a' },
-  { label: 'Terracotta', color: '#c0674f' },
-  { label: 'Sage', color: '#8fa38f' },
-  { label: 'Olive', color: '#6f7a55' },
-  { label: 'Camel', color: '#b8926a' },
-  { label: 'Dusty rose', color: '#c9a09a' },
+  { label: 'Sage', color: '#7d9471' },
+  { label: 'Eucalyptus', color: '#a9c19a' },
+  { label: 'Champagne', color: '#e9d3a3' },
+  { label: 'Beige', color: '#d4b990' },
+  { label: 'Dusty Rose', color: '#c98d8a' },
 ]
 
 const entourageDressCode = {
-  label: 'Formal',
+  label: 'Formal · Sage Green',
   description:
-    'We would love for our entourage to wear formal attire. Elegant silhouettes and polished fabrics will complement the celebration beautifully.',
-  colors: [{ value: 'Sage Green', color: '#8fa38f' }],
+    'Please wear formal attire in sage green — a long gown for ladies, and a sage suit with white shirt for gentlemen.',
+  colors: [{ value: 'Sage Green', color: '#7d9471' }],
 }
 
 const guestDressCode = {
   label: 'Semi-formal',
   description:
-    'We would love for our guests to wear semi-formal attire in our boho rustic palette. Natural fabrics and relaxed silhouettes fit the mood beautifully.',
+    'Please wear semi-formal attire in any of the colors from our Sage Garden palette below.',
 }
 
 const celebrationImages = [
@@ -191,8 +190,6 @@ const entourageRows = [
       {
         title: 'Groomsmen',
         names: [
-          'John Karl Par',
-          'Lou Renzo Sumilang',
           'Roamel Aquino',
           'Jerwin Cabrera',
           'Leo Manjares',
@@ -203,12 +200,10 @@ const entourageRows = [
       {
         title: 'Bridesmaids',
         names: [
-          'Jerizza Par',
-          'Chelsea Ibanez',
           'Veya Real',
           'Jahleel Gamoyao',
-          'Raven Villaroman',
           'Liezl Evangelista',
+          'Raven Villaroman',
           'Edessa Valenzuela',
         ],
       },
@@ -330,21 +325,29 @@ const venue = {
           <h2 class="section__title">The celebration</h2>
           <div class="ornament" aria-hidden="true" />
           <div class="details-grid">
-            <article class="detail-card">
+            <article class="detail-card detail-card--feature">
               <h3 class="detail-card__label">When</h3>
-              <p class="detail-card__value">July 25, 2026</p>
+              <p class="detail-card__value">Saturday, July 25, 2026</p>
+              <p class="detail-card__time">3:00 PM – 7:00 PM</p>
               <p class="detail-card__hint">
-                3:00 PM – 7:00 PM<br />
-                Kindly arrive on time so we can celebrate every moment.
+                Kindly arrive on time so we can celebrate every moment together.
               </p>
             </article>
-            <article class="detail-card">
+            <article class="detail-card detail-card--feature">
               <h3 class="detail-card__label">Where</h3>
               <p class="detail-card__value">{{ venue.name }}</p>
-              <p class="detail-card__hint">
+              <p class="detail-card__time detail-card__time--place">
                 {{ venue.line1 }}<br />
                 {{ venue.city }}
               </p>
+              <a
+                class="detail-card__map-link"
+                :href="`https://www.google.com/maps/search/?api=1&query=${venue.mapsQuery}`"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on map ↗
+              </a>
             </article>
           </div>
           <div
@@ -467,6 +470,7 @@ const venue = {
       <section id="attire" class="section section--paper reveal-on-scroll">
         <div class="section__inner section__inner--narrow">
           <h2 class="section__title">Dress code</h2>
+          <p class="attire-theme">Sage Garden</p>
           <div class="ornament" aria-hidden="true" />
           <div class="attire-group">
             <p class="attire-group__eyebrow">For Entourage</p>
@@ -489,6 +493,11 @@ const venue = {
             </div>
           </div>
 
+          <p class="attire-reminder">
+            <strong>Reminder:</strong> Sage green is reserved for the entourage. Guests, kindly
+            choose any other color from our palette below.
+          </p>
+
           <div class="attire-group">
             <p class="attire-group__eyebrow">For Guest</p>
             <p class="lead">{{ guestDressCode.label }}</p>
@@ -505,7 +514,7 @@ const venue = {
                 <span class="attire-swatch__label">{{ swatch.label }}</span>
               </li>
             </ul>
-            <p class="attire-note">Please skip stark black, neon colors, or all-white outfits.</p>
+            <p class="attire-note">Kindly avoid white — that's reserved for the bride.</p>
           </div>
         </div>
       </section>
@@ -903,6 +912,13 @@ const venue = {
   color: var(--sage-dark);
 }
 
+.detail-card--feature {
+  text-align: center;
+  padding: 1.85rem 1.35rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(196, 165, 116, 0.45);
+}
+
 .detail-card__value {
   margin: 0;
   font-family: 'Cormorant Garamond', serif;
@@ -911,11 +927,52 @@ const venue = {
   color: var(--bark);
 }
 
+.detail-card__time {
+  margin: 0.4rem 0 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--terracotta-dark);
+}
+
+.detail-card__time--place {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--sage-dark);
+}
+
+.detail-card__map-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(184, 107, 82, 0.4);
+}
+
+.detail-card__map-link:hover {
+  color: var(--bark);
+}
+
 .detail-card__hint {
   margin: 0.65rem 0 0;
   font-size: 0.95rem;
   line-height: 1.55;
   color: rgba(44, 38, 32, 0.85);
+}
+
+.attire-theme {
+  margin: 0.5rem 0 0;
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  line-height: 1.1;
+  color: var(--sage-dark);
 }
 
 .celebration-carousel {
@@ -1099,6 +1156,23 @@ const venue = {
   margin-top: 2.5rem;
   padding-top: 2.5rem;
   border-top: 1px solid rgba(196, 165, 116, 0.3);
+}
+
+.attire-reminder {
+  margin: 2rem auto 0;
+  max-width: 30rem;
+  padding: 0.85rem 1.15rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--terracotta-dark);
+  background: rgba(199, 136, 113, 0.1);
+  border: 1px solid rgba(199, 136, 113, 0.4);
+  border-radius: 2px;
+}
+
+.attire-reminder strong {
+  letter-spacing: 0.04em;
 }
 
 .attire-group__eyebrow {
