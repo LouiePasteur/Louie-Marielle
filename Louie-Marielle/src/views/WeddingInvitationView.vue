@@ -10,6 +10,14 @@ import celebration6 from '../assets/images/6.jpg'
 import celebration7 from '../assets/images/7.jpg'
 import celebration8 from '../assets/images/8.jpg'
 import celebration9 from '../assets/images/9.jpg'
+import venueQr from '../assets/images/venue-qr.png'
+
+const programSchedule = [
+  { time: '3:00 PM', event: 'Ceremony' },
+  { time: '4:00 PM', event: 'Pictorial' },
+  { time: '5:00 PM', event: 'Program Starts' },
+  { time: '8:00 PM', event: 'End of Program' },
+]
 
 const navOpen = ref(false)
 const scrolled = ref(false)
@@ -297,6 +305,7 @@ const venue = {
       <nav class="nav" :class="{ 'nav--open': navOpen }">
         <a href="#hero" @click="closeNav">Home</a>
         <a href="#celebration" @click="closeNav">Celebration</a>
+        <a href="#program" @click="closeNav">Program</a>
         <a href="#venue" @click="closeNav">Venue</a>
         <a href="#entourage" @click="closeNav">Entourage</a>
         <a href="#attire" @click="closeNav">Attire</a>
@@ -328,7 +337,7 @@ const venue = {
             <article class="detail-card detail-card--feature">
               <h3 class="detail-card__label">When</h3>
               <p class="detail-card__value">Saturday, July 25, 2026</p>
-              <p class="detail-card__time">3:00 PM – 7:00 PM</p>
+              <p class="detail-card__time">3:00 PM – 8:00 PM</p>
               <p class="detail-card__hint">
                 Kindly arrive on time so we can celebrate every moment together.
               </p>
@@ -384,6 +393,21 @@ const venue = {
         </div>
       </section>
 
+      <section id="program" class="section section--cream reveal-on-scroll">
+        <div class="section__inner section__inner--narrow">
+          <h2 class="section__title">The Program</h2>
+          <p class="attire-theme">Order of the Day</p>
+          <div class="ornament" aria-hidden="true" />
+          <ul class="timeline" role="list">
+            <li v-for="item in programSchedule" :key="item.event" class="tl">
+              <span class="tl__time">{{ item.time }}</span>
+              <span class="tl__dot" aria-hidden="true" />
+              <span class="tl__event">{{ item.event }}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <section id="venue" class="section section--sage reveal-on-scroll">
         <div class="section__inner">
           <h2 class="section__title section__title--light">Find us</h2>
@@ -394,6 +418,11 @@ const venue = {
             {{ venue.line1 }}<br />
             {{ venue.city }}
           </p>
+
+          <div class="venue-qr">
+            <img :src="venueQr" alt="QR code with directions to Alberto's Event Center" />
+            <p class="venue-qr__label">Scan for directions</p>
+          </div>
           <div class="map-wrap">
             <iframe
               title="Map: Alberto's Event Center, Santo Tomas, Batangas"
@@ -422,8 +451,8 @@ const venue = {
           <div class="ornament" aria-hidden="true" />
 
           <p class="entourage-calltime">
-            <span class="entourage-calltime__label">Entourage Call Time</span>
-            <span class="entourage-calltime__value">11:00 AM – 12:00 NN</span>
+            <span class="entourage-calltime__label">Bridesmaids &amp; Groomsmen Call Time</span>
+            <span class="entourage-calltime__value">12:00 NN – 2:00 PM</span>
           </p>
 
           <div class="entourage-rows">
@@ -1101,12 +1130,93 @@ const venue = {
   }
 }
 
+.section--cream {
+  background: var(--cream);
+}
+
+.timeline {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 26rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(196, 165, 116, 0.35);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(44, 38, 32, 0.06);
+}
+
+.tl {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.15rem;
+}
+
+.tl + .tl {
+  border-top: 1px solid rgba(196, 165, 116, 0.3);
+}
+
+.tl__time {
+  text-align: right;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.tl__dot {
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  border: 1px solid var(--wheat);
+}
+
+.tl__event {
+  text-align: left;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
 .venue-address {
   text-align: center;
   margin: 0 0 1.5rem;
-  font-size: 1rem;
-  line-height: 1.65;
-  opacity: 0.95;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  opacity: 1;
+}
+
+.venue-qr {
+  width: fit-content;
+  margin: 0 auto 1.75rem;
+  padding: 1rem 1rem 0.85rem;
+  background: #f8f2e7;
+  border: 1px solid rgba(247, 243, 236, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.venue-qr img {
+  display: block;
+  width: 150px;
+  height: auto;
+}
+
+.venue-qr__label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
 }
 
 .map-wrap {
