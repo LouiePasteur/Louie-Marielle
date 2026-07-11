@@ -15,7 +15,7 @@ import venueQr from '../assets/images/venue-qr.png'
 const programSchedule = [
   { time: '3:00 PM', event: 'Ceremony' },
   { time: '4:00 PM', event: 'Pictorial' },
-  { time: '5:00 PM', event: 'Program Starts' },
+  { time: '5:00 PM', event: 'Reception Program Starts' },
   { time: '8:00 PM', event: 'End of Program' },
 ]
 
@@ -1138,7 +1138,7 @@ const venue = {
   list-style: none;
   margin: 0 auto;
   padding: 0;
-  max-width: 26rem;
+  max-width: 29rem;
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(196, 165, 116, 0.35);
   border-radius: 2px;
@@ -1147,10 +1147,10 @@ const venue = {
 
 .tl {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto 1.35fr;
   align-items: center;
-  gap: 0.9rem;
-  padding: 1rem 1.15rem;
+  gap: 0.8rem;
+  padding: 1rem 1.1rem;
 }
 
 .tl + .tl {
