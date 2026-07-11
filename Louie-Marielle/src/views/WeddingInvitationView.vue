@@ -30,11 +30,11 @@ const rsvpFormUrl =
   'https://docs.google.com/forms/d/e/1FAIpQLSdhuo8uQbv7YVD0QtZrRnKayMxpmKBecSYvqpPen_z-Vwg85g/viewform'
 
 const attirePalette = [
-  { label: 'Sage', color: '#7d9471' },
-  { label: 'Eucalyptus', color: '#a9c19a' },
-  { label: 'Champagne', color: '#e9d3a3' },
-  { label: 'Beige', color: '#d4b990' },
-  { label: 'Dusty Rose', color: '#c98d8a' },
+  { label: 'Blushing Peach', color: '#efa59a' },
+  { label: 'Terracotta', color: '#c0674f' },
+  { label: 'Olive', color: '#6f7a55' },
+  { label: 'Camel', color: '#b8926a' },
+  { label: 'Dusty Rose', color: '#c9a09a' },
 ]
 
 const entourageDressCode = {
