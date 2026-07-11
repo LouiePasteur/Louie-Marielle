@@ -13,6 +13,9 @@ import celebration9 from '../assets/images/9.jpg'
 import venueQr from '../assets/images/venue-qr.png'
 
 const programSchedule = [
+  { time: '1:00 – 1:45 PM', event: 'Family & Abay Photoshoot' },
+  { time: '2:15 PM', event: 'Bride & Groom Preparation for Ceremony' },
+  { time: '2:30 PM', event: 'Entourage Preparation for Ceremony' },
   { time: '3:00 PM', event: 'Ceremony' },
   { time: '4:00 PM', event: 'Pictorial' },
   { time: '5:00 PM', event: 'Reception Program Starts' },
@@ -450,10 +453,17 @@ const venue = {
           <h2 class="entourage-title">Entourage</h2>
           <div class="ornament" aria-hidden="true" />
 
-          <p class="entourage-calltime">
-            <span class="entourage-calltime__label">Bridesmaids &amp; Groomsmen Call Time</span>
-            <span class="entourage-calltime__value">12:00 NN – 2:00 PM</span>
-          </p>
+          <p class="entourage-calltimes-heading">Call Times</p>
+          <div class="entourage-calltimes">
+            <p class="entourage-calltime">
+              <span class="entourage-calltime__label">Abay</span>
+              <span class="entourage-calltime__value">12:00 NN – 2:00 PM</span>
+            </p>
+            <p class="entourage-calltime">
+              <span class="entourage-calltime__label">Ninong &amp; Ninang</span>
+              <span class="entourage-calltime__value">2:30 PM</span>
+            </p>
+          </div>
 
           <div class="entourage-rows">
             <template v-for="(row, rowIndex) in entourageRows" :key="rowIndex">
@@ -1138,7 +1148,7 @@ const venue = {
   list-style: none;
   margin: 0 auto;
   padding: 0;
-  max-width: 29rem;
+  max-width: 32rem;
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(196, 165, 116, 0.35);
   border-radius: 2px;
@@ -1147,10 +1157,10 @@ const venue = {
 
 .tl {
   display: grid;
-  grid-template-columns: 1fr auto 1.35fr;
+  grid-template-columns: 1.15fr auto 1.35fr;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 1.1rem;
+  gap: 0.75rem;
+  padding: 1rem 0.95rem;
 }
 
 .tl + .tl {
@@ -1497,32 +1507,56 @@ const venue = {
   color: var(--sage-dark);
 }
 
+.entourage-calltimes-heading {
+  margin: 1.75rem 0 0.9rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+}
+
+.entourage-calltimes {
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .entourage-calltime {
-  margin: 1.75rem auto 0;
-  width: fit-content;
+  margin: 0;
+  flex: 1 1 15rem;
+  max-width: 18rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
-  padding: 0.85rem 1.75rem;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.15rem;
   text-align: center;
-  border: 1px solid rgba(143, 163, 143, 0.5);
+  border: 1px solid rgba(143, 163, 143, 0.55);
   border-radius: 2px;
-  background: rgba(143, 163, 143, 0.1);
+  background: rgba(143, 163, 143, 0.12);
 }
 
 .entourage-calltime__label {
-  font-size: 0.78rem;
-  letter-spacing: 0.2em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  line-height: 1.35;
   color: var(--terracotta-dark);
 }
 
 .entourage-calltime__value {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
   color: var(--sage-dark);
+  font-variant-numeric: tabular-nums;
 }
 
 .entourage-rows {
