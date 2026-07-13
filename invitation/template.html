@@ -1,0 +1,638 @@
+<title>Louie & Marielle — Wedding Invitation</title>
+<style>
+  @font-face {
+    font-family: 'Great Vibes';
+    font-style: normal; font-weight: 400; font-display: swap;
+    src: url(__GV__) format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal; font-weight: 400 700; font-display: swap;
+    src: url(__CGREG__) format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic; font-weight: 400 700; font-display: swap;
+    src: url(__CGITAL__) format('woff2');
+  }
+
+  :root {
+    color-scheme: light;
+    --ivory: #f4eddf;
+    --paper: #f8f2e7;
+    --paper-edge: #e7dcc7;
+    --sage-deep: #5f7353;
+    --sage: #7d9471;
+    --sage-soft: #93a884;
+    --panel: #dfe6d4;
+    --panel-inner: #f5f0e4;
+    --ink: #4a463c;
+    --ink-soft: #6a6455;
+    --rose: #bd8681;
+    --gold: #c3a878;
+    --sw-sage: #7d9471;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(125,148,113,0.35), transparent 60%),
+      linear-gradient(175deg, #8a9d7c 0%, #6f8263 45%, #5c6e51 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding: clamp(1rem, 4vw, 3.25rem) 1rem;
+  }
+
+  .stage {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .toolbar { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 0.25rem; }
+  .btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #f4eddf; background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(244,237,223,0.5); border-radius: 2px;
+    padding: 0.6rem 1.15rem; cursor: pointer; text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .btn:hover { background: #f4eddf; color: var(--sage-deep); }
+  .btn:focus-visible { outline: 2px solid #f4eddf; outline-offset: 3px; }
+
+  .sheet {
+    position: relative;
+    background: radial-gradient(140% 120% at 50% 0%, var(--paper) 0%, var(--ivory) 70%);
+    border: 1px solid var(--paper-edge);
+    box-shadow: 0 30px 70px -30px rgba(38,44,32,0.6), 0 2px 0 rgba(255,255,255,0.4) inset;
+    padding: clamp(2rem, 6vw, 3.75rem) clamp(1.5rem, 5vw, 3.25rem) clamp(2.25rem, 6vw, 3.5rem);
+    overflow: hidden;
+    opacity: 0; transform: translateY(24px);
+    animation: rise 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .sheet:nth-child(2) { animation-delay: 0.08s; }
+  .sheet:nth-child(3) { animation-delay: 0.16s; }
+  .sheet::after {
+    content: ''; position: absolute; inset: 12px;
+    border: 1px solid rgba(125,148,113,0.35); pointer-events: none;
+  }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .sheet { animation: none; opacity: 1; transform: none; }
+  }
+
+  .sheet__body { position: relative; z-index: 1; text-align: center; }
+
+  .sprig {
+    position: absolute; width: clamp(80px, 20vw, 130px);
+    color: var(--sage-soft); opacity: 0.55; z-index: 0; pointer-events: none;
+  }
+  .sprig--tl { top: 20px; left: 18px; }
+  .sprig--br { bottom: 20px; right: 18px; transform: rotate(180deg); }
+
+  .eyebrow {
+    margin: 0;
+    font-size: clamp(0.72rem, 2.4vw, 0.9rem);
+    letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--sage); font-weight: 600;
+  }
+  .script {
+    margin: 0; font-family: 'Great Vibes', cursive; font-weight: 400;
+    color: var(--sage-deep); line-height: 1.02;
+  }
+  .rule {
+    width: 54px; height: 1px; margin: 1.15rem auto;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    position: relative;
+  }
+  .rule::before {
+    content: ''; position: absolute; left: 50%; top: 50%;
+    width: 7px; height: 7px; transform: translate(-50%,-50%) rotate(45deg);
+    border: 1px solid var(--gold); background: var(--ivory);
+  }
+  .body-copy {
+    margin: 0 auto; max-width: 30rem;
+    font-size: clamp(1.02rem, 2.9vw, 1.2rem); line-height: 1.65; color: var(--ink-soft);
+  }
+  .italic { font-style: italic; }
+
+  /* ---- PAGE 1 ---- */
+  .portrait {
+    width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 42%;
+    display: block; border: 1px solid rgba(125,148,113,0.4);
+    margin-bottom: 1.75rem; filter: saturate(0.97);
+  }
+  .names { font-size: clamp(3.6rem, 15vw, 5.4rem); margin: 0.3rem 0 0.2rem; }
+  .names .amp { color: var(--sage); font-size: 0.8em; padding: 0 0.05em; }
+  .invite-line { margin-top: 0.6rem; }
+  .verse {
+    margin: 1.4rem auto 0; max-width: 26rem; font-style: italic;
+    font-size: clamp(0.98rem, 2.8vw, 1.12rem); color: var(--sage-deep); line-height: 1.6;
+  }
+  .verse cite {
+    display: block; font-style: normal; font-size: 0.85em;
+    letter-spacing: 0.05em; margin-top: 0.35rem; color: var(--ink-soft);
+  }
+
+  .datebar { margin: 2rem auto 0; text-align: center; }
+  .datebar__kicker {
+    margin: 0 0 0.45rem; font-size: clamp(0.9rem, 3vw, 1.05rem);
+    letter-spacing: 0.36em; text-transform: uppercase; color: var(--sage); font-weight: 600;
+  }
+  .datebar__date {
+    margin: 0; font-size: clamp(2.4rem, 9.5vw, 3.4rem); font-weight: 700;
+    line-height: 1.05; color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .datebar__time {
+    margin: 0.5rem 0 0; font-size: clamp(2.4rem, 9.5vw, 3.4rem); font-weight: 600;
+    line-height: 1.05; color: var(--sage-deep); font-variant-numeric: tabular-nums;
+  }
+
+  .venue-card {
+    margin: 2rem auto 0; max-width: 32rem;
+    border: 1px solid rgba(125,148,113,0.4);
+    padding: 1.5rem 1.35rem 1.6rem;
+    text-align: center; background: rgba(255,255,255,0.4);
+  }
+  .venue-card__kicker {
+    margin: 0; font-size: 0.78rem; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--rose); font-weight: 600;
+  }
+  .venue-card__head {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1rem; margin-top: 0.85rem;
+  }
+  .venue-card__thumb {
+    flex-shrink: 0; width: clamp(76px, 20vw, 96px); aspect-ratio: 1;
+    object-fit: cover; border: 1px solid rgba(125,148,113,0.45);
+  }
+  .venue-card__name {
+    margin: 0; font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 6.5vw, 2.5rem); color: var(--sage-deep); line-height: 1.1;
+    text-align: left;
+  }
+  .venue-card__addr {
+    margin: 1rem auto 0; max-width: 22rem;
+    font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+    font-weight: 600; line-height: 1.5; letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .venue-card__qr {
+    margin-top: 1.35rem; padding-top: 1.25rem;
+    border-top: 1px solid rgba(125,148,113,0.35);
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+  }
+  .qr {
+    width: clamp(120px, 34vw, 150px); height: auto; display: block;
+    border: 1px solid rgba(125,148,113,0.45); background: #f8f2e7; padding: 6px;
+  }
+  .qr__label {
+    margin: 0; font-size: 0.76rem; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--sage); font-weight: 600;
+  }
+
+  /* ---- PAGE 2 ---- */
+  .headline { font-size: clamp(3rem, 12vw, 4.2rem); margin-top: 0.35rem; }
+
+  .panel {
+    margin-top: 1.75rem; background: var(--panel);
+    padding: clamp(1.5rem, 5vw, 2.25rem) clamp(1.15rem, 4vw, 2rem) clamp(1.75rem, 5vw, 2.25rem);
+  }
+  .panel__title { font-size: clamp(2.3rem, 8vw, 3rem); }
+  .panel__theme {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--sage);
+  }
+
+  .timeline {
+    list-style: none; margin: 1.5rem auto 0; padding: 0;
+    max-width: 32rem;
+    background: var(--panel-inner);
+  }
+  .tl {
+    display: grid; grid-template-columns: 1.15fr auto 1.35fr;
+    align-items: center; gap: 0.75rem;
+    padding: 0.95rem 0.9rem;
+  }
+  .tl + .tl { border-top: 1px solid rgba(125,148,113,0.3); }
+  .tl__time {
+    text-align: right; font-size: clamp(1.05rem, 3.4vw, 1.22rem); font-weight: 700;
+    color: var(--sage-deep); font-variant-numeric: tabular-nums;
+  }
+  .tl__dot {
+    width: 7px; height: 7px; transform: rotate(45deg);
+    border: 1px solid var(--gold); background: transparent;
+  }
+  .tl__event {
+    text-align: left; font-size: clamp(1.02rem, 3.2vw, 1.15rem);
+    color: var(--ink); letter-spacing: 0.02em; line-height: 1.35;
+  }
+
+  .swatches {
+    list-style: none; margin: 0 auto; padding: 0;
+    display: grid; gap: 0.5rem;
+  }
+  .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .swatch__dot {
+    width: clamp(2.1rem, 7vw, 2.85rem); aspect-ratio: 1; border-radius: 50%;
+    border: 1px solid rgba(74,70,60,0.14);
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.4), 0 3px 8px rgba(44,40,30,0.14);
+  }
+  .swatch__label {
+    font-size: clamp(0.6rem, 2vw, 0.72rem); letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-soft); line-height: 1.25;
+  }
+  .swatches--guest {
+    grid-template-columns: repeat(4, 1fr); max-width: 24rem;
+    margin-left: auto; margin-right: auto; gap: 1.1rem 0.5rem;
+  }
+  @media (max-width: 460px) {
+    .swatches--guest { grid-template-columns: repeat(3, 1fr); gap: 1.1rem 0.4rem; }
+  }
+  .swatches--single { grid-template-columns: 1fr; max-width: 8rem; margin-left: auto; margin-right: auto; }
+  .swatch__dot--lg { width: clamp(2.8rem, 10vw, 3.6rem); }
+
+  .dresscode { margin-top: 1.6rem; background: var(--panel-inner); padding: 1.6rem 1.25rem 1.85rem; }
+  .dresscode__role {
+    margin: 0; font-size: 0.76rem; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--sage); font-weight: 600;
+  }
+  .dresscode__label {
+    margin: 0.3rem 0 0; font-size: clamp(1.4rem, 5vw, 1.75rem); font-weight: 600; color: var(--ink);
+  }
+  .dresscode .swatches { margin-top: 1.3rem; }
+  .dresscode__desc {
+    margin: 1.2rem auto 0; max-width: 27rem; font-style: italic;
+    font-size: 1rem; line-height: 1.55; color: var(--ink-soft);
+  }
+  .dresscode-divider {
+    height: 1px; margin: 1.2rem auto; max-width: 9rem;
+    background: linear-gradient(90deg, transparent, rgba(125,148,113,0.55), transparent);
+  }
+
+  .reminder-note {
+    margin: 1.6rem auto 0; max-width: 26rem; padding: 0.7rem 1rem;
+    font-size: 0.95rem; line-height: 1.5; color: var(--sage-deep);
+    background: rgba(125,148,113,0.16); border: 1px solid rgba(125,148,113,0.45);
+  }
+  .reminder-note strong { letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.85em; }
+  .avoid-white { margin: 0.9rem 0 0; font-style: italic; color: var(--rose); font-size: 1.02rem; }
+
+  .signoff { margin-top: 2.6rem; }
+  .signoff .script { font-size: clamp(2.4rem, 8vw, 3rem); }
+  .signoff__names {
+    margin: 0.35rem 0 0.6rem; font-size: 1.25rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--ink);
+  }
+  .signoff__meta {
+    margin: 0; font-size: 0.76rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--sage);
+  }
+
+  /* ---- PAGE 3 ---- */
+  .ent-title { font-size: clamp(3.2rem, 13vw, 4.6rem); margin-top: 0.35rem; }
+  .calltimes-heading {
+    margin: 1.6rem 0 0.9rem;
+    font-size: 0.82rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--sage); font-weight: 600;
+  }
+  .calltimes {
+    margin: 0 auto;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+  }
+  .calltime {
+    margin: 0; flex: 1 1 15rem; max-width: 18rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.45rem;
+    padding: 1.15rem;
+    border: 1px solid rgba(125,148,113,0.55); background: rgba(125,148,113,0.16);
+  }
+  .calltime__label {
+    font-size: clamp(0.9rem, 3vw, 1.02rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--rose); line-height: 1.35;
+  }
+  .calltime__value {
+    font-size: clamp(1.5rem, 5.2vw, 1.8rem); font-weight: 700;
+    color: var(--sage-deep); font-variant-numeric: tabular-nums; line-height: 1.2;
+  }
+
+  .ent-rows { display: flex; flex-direction: column; gap: clamp(1.75rem, 5vw, 2.5rem); margin-top: 2rem; }
+  .role__title {
+    font-family: 'Great Vibes', cursive; font-weight: 400;
+    font-size: clamp(1.8rem, 6vw, 2.3rem); color: var(--sage-deep); line-height: 1.1; margin: 0;
+  }
+  .role__sub {
+    margin: 0.15rem 0 0; font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rose);
+  }
+  .role__names {
+    list-style: none; margin: 0.7rem 0 0; padding: 0;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .role__names li { font-size: clamp(1.02rem, 3vw, 1.15rem); color: var(--ink); line-height: 1.35; }
+  .ent-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; align-items: start; }
+  .ent-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 2rem; }
+  .ent-cols .role__names { margin-top: 0.7rem; }
+  .ent-hairline { height: 1px; background: rgba(125,148,113,0.35); margin: 0; border: 0; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .sheet {
+      box-shadow: none; border-color: #d9cdb4; break-inside: avoid;
+      page-break-after: always; animation: none; opacity: 1; transform: none;
+    }
+    .stage { gap: 0; }
+  }
+</style>
+
+<div class="stage">
+  <div class="toolbar">
+    <button class="btn" type="button" onclick="window.print()">Save / Print</button>
+  </div>
+
+  <!-- ============ PAGE 1 — THE INVITATION ============ -->
+  <section class="sheet" aria-label="Wedding invitation">
+    <svg class="sprig sprig--tl" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <path d="M12 12 C40 30 70 55 100 100" stroke="currentColor" stroke-width="1.4" fill="none"/>
+      <g fill="currentColor" opacity="0.85">
+        <ellipse cx="30" cy="26" rx="11" ry="6" transform="rotate(28 30 26)"/>
+        <ellipse cx="50" cy="42" rx="12" ry="6.5" transform="rotate(30 50 42)"/>
+        <ellipse cx="70" cy="60" rx="12" ry="6.5" transform="rotate(32 70 60)"/>
+        <ellipse cx="88" cy="80" rx="11" ry="6" transform="rotate(34 88 80)"/>
+        <ellipse cx="22" cy="40" rx="10" ry="5.5" transform="rotate(-8 22 40)"/>
+        <ellipse cx="40" cy="58" rx="11" ry="6" transform="rotate(-6 40 58)"/>
+        <ellipse cx="60" cy="76" rx="11" ry="6" transform="rotate(-4 60 76)"/>
+      </g>
+    </svg>
+    <svg class="sprig sprig--br" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <path d="M12 12 C40 30 70 55 100 100" stroke="currentColor" stroke-width="1.4" fill="none"/>
+      <g fill="currentColor" opacity="0.85">
+        <ellipse cx="30" cy="26" rx="11" ry="6" transform="rotate(28 30 26)"/>
+        <ellipse cx="50" cy="42" rx="12" ry="6.5" transform="rotate(30 50 42)"/>
+        <ellipse cx="70" cy="60" rx="12" ry="6.5" transform="rotate(32 70 60)"/>
+        <ellipse cx="88" cy="80" rx="11" ry="6" transform="rotate(34 88 80)"/>
+        <ellipse cx="22" cy="40" rx="10" ry="5.5" transform="rotate(-8 22 40)"/>
+        <ellipse cx="40" cy="58" rx="11" ry="6" transform="rotate(-6 40 58)"/>
+        <ellipse cx="60" cy="76" rx="11" ry="6" transform="rotate(-4 60 76)"/>
+      </g>
+    </svg>
+
+    <div class="sheet__body">
+      <img class="portrait" src="__COUPLE__" alt="Louie and Marielle" />
+      <p class="eyebrow">Together with their families</p>
+      <h1 class="script names">Louie <span class="amp">&amp;</span> Marielle</h1>
+      <p class="body-copy invite-line italic">
+        request the pleasure of your company<br />as they exchange vows of a lifetime
+      </p>
+      <p class="verse">
+        “Therefore what God has joined together, let no one separate.”
+        <cite>— Mark 10:9</cite>
+      </p>
+
+      <div class="datebar">
+        <p class="datebar__kicker">Saturday</p>
+        <p class="datebar__date">July 25, 2026</p>
+        <p class="datebar__time">3:00 PM – 8:00 PM</p>
+      </div>
+
+      <div class="venue-card">
+        <p class="venue-card__kicker">The Celebration</p>
+        <div class="venue-card__head">
+          <img class="venue-card__thumb" src="__VENUE__" alt="Alberto's Event Center" />
+          <p class="venue-card__name">Alberto's Event Center</p>
+        </div>
+        <p class="venue-card__addr">
+          193 J. P. Laurel Street<br />
+          Poblacion 1, Santo Tomas, Batangas
+        </p>
+        <div class="venue-card__qr">
+          <img class="qr" src="__QR__" alt="QR code with directions to Alberto's Event Center" />
+          <p class="qr__label">Scan for directions</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2 — THE DETAILS ============ -->
+  <section class="sheet" aria-label="Program and dress code">
+    <div class="sheet__body">
+      <p class="eyebrow">For our guests</p>
+      <h2 class="script headline">The Details</h2>
+      <div class="rule" aria-hidden="true"></div>
+
+      <div class="panel">
+        <h3 class="script panel__title">The Program</h3>
+        <p class="panel__theme">Order of the Day</p>
+        <ul class="timeline" role="list">
+          <li class="tl">
+            <span class="tl__time">1:00 – 1:45 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Family &amp; Abay Photoshoot</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">2:15 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Bride &amp; Groom Preparation for Ceremony</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">2:30 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Entourage Preparation for Ceremony</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">3:00 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Ceremony</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">4:00 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Pictorial</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">5:00 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">Reception Program Starts</span>
+          </li>
+          <li class="tl">
+            <span class="tl__time">8:00 PM</span>
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__event">End of Program</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3 class="script panel__title">Attire</h3>
+        <p class="panel__theme">Sage Garden — Dress Code</p>
+
+        <div class="dresscode">
+          <p class="dresscode__role">For the Entourage</p>
+          <p class="dresscode__label">Formal · Sage Green</p>
+          <ul class="swatches swatches--single" role="list">
+            <li class="swatch">
+              <span class="swatch__dot swatch__dot--lg" style="background:var(--sw-sage)"></span>
+              <span class="swatch__label">Sage Green</span>
+            </li>
+          </ul>
+          <p class="dresscode__desc">Please wear formal attire in sage green — a long gown for ladies, and a sage suit with white shirt for gentlemen.</p>
+        </div>
+
+        <div class="dresscode-divider" aria-hidden="true"></div>
+
+        <div class="dresscode">
+          <p class="dresscode__role">For the Guests</p>
+          <p class="dresscode__label">Semi-formal</p>
+          <ul class="swatches swatches--guest" role="list">
+            <li class="swatch"><span class="swatch__dot" style="background:#decebf"></span><span class="swatch__label">Blush</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#efa59a"></span><span class="swatch__label">Blushing Peach</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#c9a09a"></span><span class="swatch__label">Dusty Rose</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#c0674f"></span><span class="swatch__label">Terracotta</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#b8926a"></span><span class="swatch__label">Camel</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#6f7a55"></span><span class="swatch__label">Olive</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#68756d"></span><span class="swatch__label">Evergreen</span></li>
+            <li class="swatch"><span class="swatch__dot" style="background:#5c757a"></span><span class="swatch__label">Slate Teal</span></li>
+          </ul>
+          <p class="dresscode__desc">Please wear semi-formal attire in any of the guest colors above.</p>
+        </div>
+
+        <p class="reminder-note"><strong>Reminder:</strong> Sage green is reserved for the entourage — guests, kindly choose any other color from our palette.</p>
+        <p class="avoid-white">Kindly avoid white — that's reserved for the bride.</p>
+      </div>
+
+      <div class="signoff">
+        <h3 class="script">with love,</h3>
+        <p class="signoff__names">Louie &amp; Marielle</p>
+        <p class="signoff__meta">07 · 25 · 2026 · Santo Tomas, Batangas</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3 — THE ENTOURAGE ============ -->
+  <section class="sheet" aria-label="The entourage">
+    <div class="sheet__body">
+      <p class="eyebrow">The</p>
+      <h2 class="script ent-title">Entourage</h2>
+      <div class="rule" aria-hidden="true"></div>
+
+      <p class="calltimes-heading">Call Times</p>
+      <div class="calltimes">
+        <p class="calltime">
+          <span class="calltime__label">Abay</span>
+          <span class="calltime__value">10:00 AM</span>
+        </p>
+        <p class="calltime">
+          <span class="calltime__label">Ninong &amp; Ninang</span>
+          <span class="calltime__value">2:30 PM</span>
+        </p>
+      </div>
+
+      <div class="ent-rows">
+        <div class="ent-pair">
+          <div>
+            <h3 class="role__title">Parents of the Groom</h3>
+            <ul class="role__names" role="list"><li>Pastor Pantoja</li><li>Ofelia Pantoja</li></ul>
+          </div>
+          <div>
+            <h3 class="role__title">Parents of the Bride</h3>
+            <ul class="role__names" role="list"><li>Mario Camba</li><li>Rosebelle Camba</li></ul>
+          </div>
+        </div>
+
+        <hr class="ent-hairline" />
+
+        <div>
+          <h3 class="role__title">Principal Sponsors</h3>
+          <p class="role__sub">To stand as witness to our vows</p>
+          <div class="ent-cols">
+            <ul class="role__names" role="list">
+              <li>Romeo V. Bathan</li><li>Ma. Luzviminda N. Bathan</li><li>Nicolai Manalo</li><li>Paul Manalo</li>
+            </ul>
+            <ul class="role__names" role="list">
+              <li>Romnick Anda</li><li>Salie Anda</li><li>Alwyn Firme</li><li>Salen Sambillo</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="ent-hairline" />
+
+        <div class="ent-pair">
+          <div>
+            <h3 class="role__title">Best Man</h3>
+            <ul class="role__names" role="list"><li>Luigi Bathan</li></ul>
+          </div>
+          <div>
+            <h3 class="role__title">Maid of Honor</h3>
+            <ul class="role__names" role="list"><li>Rianette Grajo</li></ul>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="role__title">Cord</h3>
+          <p class="role__sub">To bind us together in unity</p>
+          <ul class="role__names" role="list"><li>Liezl Evangelista</li><li>Roamel Aquino</li></ul>
+        </div>
+
+        <div class="ent-pair">
+          <div>
+            <h3 class="role__title">Candle</h3>
+            <p class="role__sub">To light our path</p>
+            <ul class="role__names" role="list"><li>Raven Villaroman</li><li>Adam Ibarrola</li></ul>
+          </div>
+          <div>
+            <h3 class="role__title">Veil</h3>
+            <p class="role__sub">To clothe us in love</p>
+            <ul class="role__names" role="list"><li>Edessa Valenzuela</li><li>Jerwin Cabrera</li></ul>
+          </div>
+        </div>
+
+        <hr class="ent-hairline" />
+
+        <div class="ent-pair">
+          <div>
+            <h3 class="role__title">Groomsmen</h3>
+            <ul class="role__names" role="list">
+              <li>Roamel Aquino</li><li>Jerwin Cabrera</li><li>Leo Manjares</li><li>Adam Ibarrola</li><li>John Mark Camba</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="role__title">Bridesmaids</h3>
+            <ul class="role__names" role="list">
+              <li>Veya Real</li><li>Jahleel Gamoyao</li><li>Liezl Evangelista</li><li>Raven Villaroman</li><li>Edessa Valenzuela</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="ent-hairline" />
+
+        <div class="ent-pair">
+          <div>
+            <h3 class="role__title">Ring Bearer</h3>
+            <p class="role__sub">To carry our symbol of love</p>
+            <ul class="role__names" role="list"><li>John Mark Camba</li></ul>
+          </div>
+          <div>
+            <h3 class="role__title">Bible Bearer</h3>
+            <p class="role__sub">To carry our symbol of faith</p>
+            <ul class="role__names" role="list"><li>Ralph Camba</li></ul>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="role__title">Coin Bearer</h3>
+          <p class="role__sub">To carry our symbol of treasure</p>
+          <ul class="role__names" role="list"><li>Harrey Torbeles</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

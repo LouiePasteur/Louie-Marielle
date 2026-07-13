@@ -188,14 +188,22 @@ const entourageRows = [
     role: {
       title: 'Cord',
       subtitle: 'To bind us together in unity',
-      names: ['Romeo V. Bathan', 'Ma. Luzviminda N. Bathan'],
+      names: ['Liezl Evangelista', 'Roamel Aquino'],
     },
   },
   {
     type: 'pair',
     roles: [
-      { title: 'Candle', subtitle: 'To light our path', names: ['Romnick Anda', 'Salie Anda'] },
-      { title: 'Veil', subtitle: 'To clothe us in love', names: ['Nicolai Manalo', 'Paul Manalo'] },
+      {
+        title: 'Candle',
+        subtitle: 'To light our path',
+        names: ['Raven Villaroman', 'Adam Ibarrola'],
+      },
+      {
+        title: 'Veil',
+        subtitle: 'To clothe us in love',
+        names: ['Edessa Valenzuela', 'Jerwin Cabrera'],
+      },
     ],
   },
   {
@@ -460,7 +468,7 @@ const venue = {
           <div class="entourage-calltimes">
             <p class="entourage-calltime">
               <span class="entourage-calltime__label">Abay</span>
-              <span class="entourage-calltime__value">12:00 NN – 2:00 PM</span>
+              <span class="entourage-calltime__value">10:00 AM</span>
             </p>
             <p class="entourage-calltime">
               <span class="entourage-calltime__label">Ninong &amp; Ninang</span>
